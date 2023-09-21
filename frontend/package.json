@@ -6,8 +6,13 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.5.0",
+    "bootstrap": "^5.3.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
+    "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -16,9 +21,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postbuild": "npm run copy-build",
-    "copy-build": "rm -r ../moneymanagerapp/templates/moneymanagerapp/ && npm run copy-templates",
-    "copy-templates": "mkdir -p ../moneymanagerapp/templates/moneymanagerapp && cp -r build/* ../moneymanagerapp/templates/moneymanagerapp"
+    "postbuild": "npm run rm-templates && npm run copy-templates && npm run move-favicon && npm run move-manifest && npm run move-png",
+    "rm-templates": "rm -r ../moneymanagerapp/templates/moneymanagerapp/",
+    "copy-templates": "mkdir -p ../moneymanagerapp/templates/moneymanagerapp && cp -r build/* ../moneymanagerapp/templates/moneymanagerapp",
+    "move-favicon": "mv ../moneymanagerapp/templates/moneymanagerapp/favicon.ico ../moneymanagerapp/templates/moneymanagerapp/static/",
+    "move-manifest": "mv ../moneymanagerapp/templates/moneymanagerapp/manifest.json ../moneymanagerapp/templates/moneymanagerapp/static/",
+    "move-png": "mv ../moneymanagerapp/templates/moneymanagerapp/*.png ../moneymanagerapp/templates/moneymanagerapp/static/"
   },
   "eslintConfig": {
     "extends": [

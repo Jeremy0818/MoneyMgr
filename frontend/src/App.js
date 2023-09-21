@@ -1,25 +1,41 @@
-import logo from './logo.jpg';
+import React from 'react';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './Utils/AuthContext';
+import Home from './Screens/Home';
+import Profile from './Screens/Profile';
+import Landing from './Screens/Landing';
+import Login from './Screens/Login';
+import Register from './Screens/Register';
+import Analytic from './Screens/Register';
+import Finance from './Screens/Register';
+import NotFound from './Screens/NotFound';
+import BottomNavBar from './Screens/BottomNavBar';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+
+    return (
+        <div className="App">
+            <AuthProvider>
+                <Router>
+                    <BottomNavBar />
+                    <div>
+                        <Routes>
+                            <Route exact path="/" element={<Landing />} />
+                            <Route path="/index" element={<Landing />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/finance" element={<Finance />} />
+                            <Route path="/analytic" element={<Analytic />} />
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                    </div>
+                </Router>
+            </AuthProvider>
+        </div>
+    );
+};
 
 export default App;

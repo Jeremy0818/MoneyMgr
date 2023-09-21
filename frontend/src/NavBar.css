@@ -1,0 +1,46 @@
+/* NavBar.css */
+
+/* Style for the navigation bar container */
+.navbar-container {
+    background-color: #333; /* Dark background color for night mode */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #555; /* Darker border for separation */
+    z-index: 1000;
+}
+
+/* Style for individual navigation items */
+.nav-item {
+    text-align: center;
+    text-decoration: none;
+    color: #fff; /* White text color for night mode */
+    flex: 1;
+    padding: 10px 0;
+    transition: color 0.3s;
+}
+
+/* Optional icon style */
+.nav-link {
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for active navigation item */
+.nav-link.active {
+    color: #4267b2; /* Active item text color (Facebook blue) */
+}
+
+/* Optional label style */
+.nav-label {
+    font-size: 12px;
+}

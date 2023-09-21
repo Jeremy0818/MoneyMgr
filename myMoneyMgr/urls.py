@@ -15,14 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import RedirectView
-from moneymanagerapp.views import Index, ocrApi
+from moneymanagerapp.views import *
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    # Redirect the root URL to the 'index' view
-    path('', RedirectView.as_view(pattern_name='index', permanent=False), name='root'),
+    # Manifest url
+    path('manifest.json', Manifest.as_view(content_type='application/json'), name='manifest'),
     path('admin/', admin.site.urls),
-    path('index/', Index.as_view(), name='index'),
-    path('api/ocr/', ocrApi, name='ocr'),
+    
+    # API urls
+    path('api/get-csrf-token/', get_csrf_token_api, name='get_csrf_token'),
+    path('api/login/', login_api, name='api-login'),
+    path('api/logout/', logout_api, name='api-logout'),
+    path('api/ocr/', ocr_api, name='api-ocr'),
+    path('api/register/', register_api, name='api-register'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='api-token-refresh'),
+    
+    # Views urls
+    path('', Index.as_view(), name='index'),
+    # Redirect the root URL to the 'index' view
+    # path('', RedirectView.as_view(pattern_name='index', permanent=False), name='root'),
+    re_path(r'^(?:.*)/?$', Index.as_view()) # this has to be the last one
 ]
