@@ -12,13 +12,20 @@ function AuthProvider({ children }) {
   // Initialize user and isLoading state from stored token on app startup
   useEffect(() => {
     async function loadUserFromToken() {
-      const { token, refreshToken } = await getToken();
+      try {
+        const { token, refreshToken } = await getToken();
+      const userInfo = await getUserInfo();
       console.log("Token: ", token);
       console.log("Refresh Token: ", refreshToken);
+      console.log("User info: ", userInfo);
       if (token) {
-        setUser({ token, refreshToken });
+        setUser({ token, refreshToken, userInfo });
       }
       setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+      
     }
 
     loadUserFromToken();
@@ -61,7 +68,7 @@ function AuthProvider({ children }) {
       // For simplicity, this example checks every minute
       const refreshInterval = setInterval(() => {
         handleTokenRefresh();
-      }, 10 * 1000);
+      }, 3 * 60 * 1000);
 
       return () => clearInterval(refreshInterval);
     }

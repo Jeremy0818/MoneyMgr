@@ -7,8 +7,8 @@ import Profile from './Screens/Profile';
 import Landing from './Screens/Landing';
 import Login from './Screens/Login';
 import Register from './Screens/Register';
-import Analytic from './Screens/Register';
-import Finance from './Screens/Register';
+import Analytic from './Screens/Analytic';
+import Personal from './Screens/Personal';
 import NotFound from './Screens/NotFound';
 import BottomNavBar from './Screens/BottomNavBar';
 
@@ -27,7 +27,7 @@ const App = () => {
                             <Route path="/register" element={<Register />} />
                             <Route path="/home" element={<Home />} />
                             <Route path="/profile" element={<Profile />} />
-                            <Route path="/finance" element={<Finance />} />
+                            <Route path="/personal" element={<Personal />} />
                             <Route path="/analytic" element={<Analytic />} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>

@@ -26,7 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # API urls
-    path('api/get-csrf-token/', get_csrf_token_api, name='get_csrf_token'),
+    path('api/get-csrf-token/', get_csrf_token_api, name='get-csrf-token'),
+    path('api/get-user/', get_user_api, name='get-user'),
     path('api/login/', login_api, name='api-login'),
     path('api/logout/', logout_api, name='api-logout'),
     path('api/ocr/', ocr_api, name='api-ocr'),

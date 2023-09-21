@@ -12,6 +12,7 @@ from django.views.generic.base import TemplateView
 from django import forms
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +21,8 @@ import json
 
 from .utils import ocr
 from .serializers import CustomUserSerializer
+
+JWTAuthentication.USER_ID_CLAIM = 'user_id'
 
 class Index(TemplateView):
     template_name = 'moneymanagerapp/index.html'
@@ -127,10 +130,9 @@ def get_user_api(request):
         if authorization_header and authorization_header.startswith('Bearer '):
             # Extract the token part (remove 'Bearer ')
             token = authorization_header.split(' ')[1]
-        
-        access_token = 'your_access_token_here'  # Replace with the actual access token
+            
         # Decode the access token
-        decoded_token = AccessToken(access_token)
+        decoded_token = AccessToken(token)
         
         # Extract the user ID from the token
         user_id = decoded_token[JWTAuthentication.USER_ID_CLAIM]
@@ -150,6 +152,8 @@ def get_user_api(request):
             return JsonResponse({'error': 'User not found'}, status=404)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+    except TokenError:
+        return JsonResponse({'error': 'Token is invalid or expired'}, status=403)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

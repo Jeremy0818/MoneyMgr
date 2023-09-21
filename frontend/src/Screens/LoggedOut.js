@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import { RedirectModal } from './RedirectModal';
 import { useAuth } from '../Utils/AuthContext';
+import { ThreeCircles } from 'react-loader-spinner';
 
-function Finance() {
+function LoggedOut() {
     const [showHRedirectModal, setShowRedirectModal] = useState(false);
     const [redirectModalContent, setRedirectModalContent] = useState('');
     const [redirectPath, setRedirectPath] = useState('/');
-    const { user } = useAuth();
+    const { isLoading } = useAuth();
 
     const handleRedirect = () => {
         setRedirectModalContent("Redirecting to landing page...");
@@ -15,14 +16,19 @@ function Finance() {
 
     return (
         <div>
-            <h1>Finance</h1>
-            {user ? (
-                <div>
-                    <p>Accounts:</p>
-                    <p>Cash</p>
-                    <p>Saving Account</p>
-                    <p>Credit Card</p>
-                </div>
+            {isLoading ? (
+                <ThreeCircles
+                    height="100"
+                    width="100"
+                    color="#4fa94d"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="three-circles-rotating"
+                    outerCircleColor=""
+                    innerCircleColor=""
+                    middleCircleColor=""
+                />
             ) : (
                 <div>
                     <p>You are not logged in.</p>
@@ -31,11 +37,10 @@ function Finance() {
                         show={showHRedirectModal}
                         content={redirectModalContent}
                         redirectPath={redirectPath} />
-                </div>
+                </div >
             )}
-
         </div>
     )
 }
 
-export default Finance;
+export { LoggedOut };

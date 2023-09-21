@@ -22,9 +22,9 @@ export const getUserInfo = async () => {
         });
 
         // Handle the response data here
-        console.log(response.data);
+        console.log(response.data.user);
 
-        return response.data; // Return the new access token
+        return response.data.user; // Return the new access token
     } catch (error) {
         // Handle token refresh failure
         console.error(error);

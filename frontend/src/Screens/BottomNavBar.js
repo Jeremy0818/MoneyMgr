@@ -24,9 +24,9 @@ export default function BottomNavBar() {
                 
             </Nav>
             <Nav className="nav-item">
-                <NavLink to="/finance" className="nav-link">
+                <NavLink to="/personal" className="nav-link">
                     <FaMoneyBill />
-                    <span className="nav-label">Finance</span>
+                    <span className="nav-label">Personal</span>
                 </NavLink>
                 
             </Nav>

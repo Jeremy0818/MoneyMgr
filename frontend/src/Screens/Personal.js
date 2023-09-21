@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 
-function Analytic() {
+function Personal() {
     const { isAuthenticated } = useAuth();
 
     return (
         <div>
             {isAuthenticated() ? (
                 <div>
-                    <h1>Analytic</h1>
-                    <p>Chart:</p>
-                    <p>pie chart</p>
-                    <p>list of expense</p>
+                    <h1>Personal</h1>
+                    <p>Accounts:</p>
+                    <p>Cash</p>
+                    <p>Saving Account</p>
+                    <p>Credit Card</p>
                 </div>
             ) : (
                 <LoggedOut />
@@ -22,4 +23,4 @@ function Analytic() {
     )
 }
 
-export default Analytic;
+export default Personal;
