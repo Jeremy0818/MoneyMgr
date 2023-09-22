@@ -31,7 +31,7 @@ function LoggedOut() {
                 />
             ) : (
                 <div>
-                    <p>You are not logged in.</p>
+                    <p>You are logged out.</p>
                     <button onClick={handleRedirect}>Login</button>
                     <RedirectModal
                         show={showHRedirectModal}

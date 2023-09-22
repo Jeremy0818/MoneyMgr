@@ -3,7 +3,7 @@ import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 
 function Profile() {
-    const { user, isAuthenticated } = useAuth();
+    const { user, logout, isAuthenticated } = useAuth();
 
     return (
         <div>
@@ -11,6 +11,7 @@ function Profile() {
                 <div>
                     <h1>Profile</h1>
                     <p>Hello, {user.userInfo.username}!</p>
+                    <button onClick={logout}>Logout</button>
                 </div>
             ) : (
                 <LoggedOut />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 import { HelpModal } from './HelpModal';
+import { useAuth } from '../Utils/AuthContext';
 
 function Register() {
     const [username, setUsername] = useState('');
@@ -12,8 +13,10 @@ function Register() {
     const [help, setHelp] = useState({});
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [helpModalContent, setHelpModalContent] = useState('');
+    const { logout } = useAuth();
 
     useEffect(() => {
+        logout();
         getHelpText();
     }, []);
 

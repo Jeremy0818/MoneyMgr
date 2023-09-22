@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './Utils/AuthContext';
@@ -10,15 +10,22 @@ import Register from './Screens/Register';
 import Analytic from './Screens/Analytic';
 import Personal from './Screens/Personal';
 import NotFound from './Screens/NotFound';
-import BottomNavBar from './Screens/BottomNavBar';
+import NavBar from './Screens/NavBar';
+import SlidingMenu from './Screens/SlidingMenu';
 
 const App = () => {
+    const [isMenuOpen, setMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setMenuOpen(!isMenuOpen);
+    };
 
     return (
         <div className="App">
             <AuthProvider>
                 <Router>
-                    <BottomNavBar />
+                    <NavBar toggleMenu={toggleMenu} />
+                    <SlidingMenu isOpen={isMenuOpen} onClose={toggleMenu} />
                     <div>
                         <Routes>
                             <Route exact path="/" element={<Landing />} />
