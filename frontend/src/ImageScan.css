@@ -10,40 +10,69 @@
     justify-content: center;
     align-items: center;
     height: 40vh;
-    flex: 1;
+    min-height: 20vh;
     /* Take up available space in both scenarios */
     text-align: center;
+    /* transition: height 0.3s ease; */
 }
 
 .bottom-half {
     padding: 20px;
     overflow-y: auto;
-    /* Enable vertical scrolling if needed */
     height: 40vh;
+    /* Enable vertical scrolling if needed */
     color: white;
     flex: 1;
     /* Take up available space in both scenarios */
     text-align: center;
 }
 
-img {
-    max-width: 100%;
-    max-height: 100%;
-    cursor: pointer;
-}
-
 .full-screen-image {
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     /* Semi-transparent background overlay */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+@media (min-width: 768px) {
+    .image-scan-container {
+        flex-direction: row;
+        /* Split items horizontally */
+    }
+
+    .top-half {
+        flex: 1;
+        /* Equal width in the top row */
+        height: 80vh;
+        min-height: 80vh;
+    }
+
+    .bottom-half {
+        /* flex: 1; */
+        /* Equal width in the bottom row */
+        height: 80vh;
+        overflow-y: auto;
+        padding-top: 0%;
+    }
+
+    .full-screen-image {
+        height: 100%;
+        min-height: 0%;
+    }
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: pointer;
 }
 
 .list-item-title {
@@ -126,21 +155,39 @@ img {
     /* Hover color */
 }
 
-@media (min-width: 768px) {
-    .image-scan-container {
-        flex-direction: row;
-        /* Split items horizontally */
-    }
+.custom-list-item {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
 
-    .top-half {
-        flex: 1;
-        /* Equal width in the top row */
-        height: 80vh;
-    }
+.custom-list-item.expanded {
+    background-color: #f0f0f0;
+}
 
-    .bottom-half {
-        flex: 1;
-        /* Equal width in the bottom row */
-        height: 80vh;
-    }
+.list-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-title {
+    color: #333; /* Adjust the color as needed */
+    font-weight: bold;
+}
+
+.icon.up, .icon.down {
+    color: #333; /* Adjust the color as needed */
+    font-size: 20px; /* Adjust the icon size as needed */
+}
+
+.additional-details {
+    color: #333;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+}
+
+.custom-list-item.expanded .additional-details {
+    max-height: 200px; /* Adjust the max height as needed */
 }

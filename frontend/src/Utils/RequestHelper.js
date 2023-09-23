@@ -60,7 +60,7 @@ export const uploadImage = async (image) => {
             return { data: null, error: data.error };
         }
 
-        return { data: data, error: null };
+        return { data: data.data, error: null };
     } catch (error) {
         console.error('Error:', error);
         return { data: null, error: error };

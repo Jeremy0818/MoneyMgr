@@ -7,6 +7,10 @@ import cv2
 import numpy as np
 import concurrent.futures
 import enchant
+from datetime import datetime
+from dateutil import parser
+from .models import Transaction
+from .serializers import TransactionSerializer
 
 def ocr(image_data):
     img = Image.open(image_data)
@@ -17,23 +21,13 @@ def ocr(image_data):
     # Extract receipt information
     receipt_info = extract_receipt_info(recognized_text)
 
-    # Print the extracted information
-    print("Total Amount:", receipt_info['total_amount'])
-    print("Date Paid:", receipt_info['date_paid'])
-    print("Merchant Name:", receipt_info['merchant_name'])
-
-    # Save or send the processed image to the client
-    buffered = io.BytesIO()
-    processed_image.save(buffered, format="JPEG")
-    encoded_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    data = handle_extracted_info(receipt_info['total_amount'], receipt_info['date_paid'])
+    serializer = TransactionSerializer(data, many=True)
+    serialized_data = serializer.data
 
     # Create a JSON response
     response_data = {
-        'text': recognized_text,
-        'merchant_name': receipt_info['merchant_name'],
-        'date': receipt_info['date_paid'],
-        'total_amount': receipt_info['total_amount'],
-        'processed_image': encoded_image,
+        'data': serialized_data
     }
     return response_data
 
@@ -68,14 +62,14 @@ def recognize_text(image, config='--psm 6 --oem 3 -c tessedit_char_whitelist=012
         for future in concurrent.futures.as_completed(future_to_region):
             region_text = future.result()
             result_text += region_text  # Append recognized text from this region to the result
-
+    print("Completed")
     # Clean up the recognized text
     # result_text = clean_text(result_text)
     result_text = correct_ocr_errors(result_text)
     # result_text = filter_short_words(result_text)
     # result_text = filter_nonexistent_words(result_text)
 
-    print("Result: ", result_text)
+    # print("Result: ", result_text)
     return result_text, processed_image
 
 def clean_text(text):
@@ -124,9 +118,8 @@ def perform_ocr(image, coordinates, config):
     
     # Perform OCR on the region of interest
     region_text = pytesseract.image_to_string(roi_image, config=config)
-    print(region_text)
-    print("Next-----------------------")
-    
+    # print(region_text)
+    # print("Next-----------------------")
     return region_text
 
 def detect_text_regions(image):
@@ -175,7 +168,7 @@ def extract_receipt_info(recognized_text):
 
     # Matches various date formats like DD/MM/YYYY, DD-MM-YYYY, MM/DD/YYYY, DD Mon YYYY (e.g., 10 Sep 23)
     date_matches = re.findall(date_pattern, recognized_text)
-    date_matches = [date  for dates in date_matches for date in dates if date != '']
+    date_matches = [date for dates in date_matches for date in dates if date != '']
 
     # Extract merchant names using a flexible pattern
     merchant_name_pattern = r'Merchant|Retailer\s*:\s*(.*?)\n'
@@ -186,3 +179,25 @@ def extract_receipt_info(recognized_text):
         'date_paid': date_matches,
         'merchant_name': merchant_name_matches,
     }
+
+def handle_extracted_info(amounts, dates):
+    # Create a list to store the Expense instances
+    transactions = []
+    print(len(amounts))
+    print(len(dates))
+
+    for i in range(min(len(amounts), len(dates))):
+        print("---->", i)
+        print(amounts[i])
+        print(dates[i])
+        print("Amount title: ", amounts[i][0])
+        print("Amount: ", amounts[i][1][0])
+
+        data = {
+            'title': amounts[i][0],
+            'date': parser.parse(dates[i]),
+            'total_amount': amounts[i][1][0],
+        }
+        transasction_instance = Transaction(**data)
+        transactions.append(transasction_instance)
+    return transactions

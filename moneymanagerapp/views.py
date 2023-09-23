@@ -168,4 +168,5 @@ def ocr_api(request):
         return JsonResponse(response_data)
 
     except Exception as e:
+        print(e)
         return JsonResponse({'error': str(e)}, status=500)
