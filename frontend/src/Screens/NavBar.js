@@ -11,9 +11,9 @@ export default function NavBar({ toggleMenu }) {
 
 
     // Render the navigation bar only if the user is logged in
-    // if (!isAuthenticated()) {
-    //     return null; // Don't render anything if the user is not logged in
-    // }
+    if (!isAuthenticated()) {
+        return null; // Don't render anything if the user is not logged in
+    }
 
     return (
         <Navbar className="navbar-container" bg="light" variant="light">

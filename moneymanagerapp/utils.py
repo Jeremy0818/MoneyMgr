@@ -157,10 +157,10 @@ def detect_text_regions(image):
 
 def extract_receipt_info(recognized_text):
     # Extract total amounts using a flexible numeric pattern with a required decimal point
-    # total_amount_pattern = r'\b(\d+\.\d+)\b'  # Matches digits with a required decimal point
+    total_amount_pattern = r'\b(\d+\.\d+)\b'  # Matches digits with a required decimal point
     # total_amount_pattern = r'\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*(?:\.\d{2})?)\b'
     # total_amount_pattern = r'\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*\.\d{2})\b'
-    total_amount_pattern = r'(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d{1,3}(?:.\d{3})*(?:\.\d{2}))\b'
+    # total_amount_pattern = r'(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d{1,3}(?:.\d{3})*(?:\.\d{2}))\b'
 
     # Updated regex pattern to capture the entire line containing the total amount
     total_amount_text_pattern = r'^(.*\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*(?:\.\d{2})?)\b.*)$'

@@ -1,0 +1,146 @@
+.image-scan-container {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-half {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+    flex: 1;
+    /* Take up available space in both scenarios */
+    text-align: center;
+}
+
+.bottom-half {
+    padding: 20px;
+    overflow-y: auto;
+    /* Enable vertical scrolling if needed */
+    height: 40vh;
+    color: white;
+    flex: 1;
+    /* Take up available space in both scenarios */
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: pointer;
+}
+
+.full-screen-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Semi-transparent background overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.list-item-title {
+    color: #ccc;
+}
+
+.custom-list-item {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.custom-list-item:hover {
+    background-color: #ddd;
+}
+
+.full-screen-image-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+}
+
+.upload-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header {
+    position: absolute;
+    /* Fixed position at the top */
+    top: 0;
+    /* Stick to the top of the viewport */
+    left: 0;
+    /* Stick to the left of the viewport */
+    right: 0;
+    /* Stick to the right of the viewport */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Header background color */
+    color: white;
+    /* Text color */
+    padding: 10px;
+    /* Adjust padding as needed */
+}
+
+.cancel-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add this CSS to your existing stylesheet or create a new one */
+.done-button {
+    /* position: absolute;
+    top: 10px;
+    right: 10px; */
+    background: transparent;
+    /* Button background color */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Style the button on hover */
+.done-button:hover {
+    background: #0056b3;
+    /* Hover color */
+}
+
+@media (min-width: 768px) {
+    .image-scan-container {
+        flex-direction: row;
+        /* Split items horizontally */
+    }
+
+    .top-half {
+        flex: 1;
+        /* Equal width in the top row */
+        height: 80vh;
+    }
+
+    .bottom-half {
+        flex: 1;
+        /* Equal width in the bottom row */
+        height: 80vh;
+    }
+}
