@@ -1,3 +1,5 @@
+/* Styling for the ImageScan component */
+
 .image-scan-container {
     width: 100%;
     height: 80vh;
@@ -215,13 +217,14 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #f0f0f0;
     padding: 10px;
     margin: 0;
     height: 50px;
     transition: background-color 0.3s;
 }
 
-.custom-list-item:hover {
+.custom-list-item .list-header:hover {
     background-color: #e0e0f0;
 }
 
@@ -243,7 +246,7 @@ img {
     right: 0;
     bottom: 0;
     transform: translateX(100%);
-    transition: transform 0.1s;
+    transition: transform 0.3s;
 }
 
 .custom-list-item.swiping .delete-button {
@@ -251,13 +254,5 @@ img {
 }
 
 .custom-list-item .delete-button:hover {
-    background-color: #ff3333;
-}
-
-.custom-list-item .details-delete-button {
-    background-color: #ff5555;
-}
-
-.custom-list-item .details-delete-button:hover {
     background-color: #ff3333;
 }

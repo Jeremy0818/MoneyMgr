@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import concurrent.futures
 import enchant
-from datetime import datetime
+from datetime import datetime, date
 from dateutil import parser
 from .models import Transaction
 from .serializers import TransactionSerializer
@@ -150,10 +150,10 @@ def detect_text_regions(image):
 
 def extract_receipt_info(recognized_text):
     # Extract total amounts using a flexible numeric pattern with a required decimal point
-    total_amount_pattern = r'\b(\d+\.\d+)\b'  # Matches digits with a required decimal point
+    # total_amount_pattern = r'\b(\d+\.\d+)\b'  # Matches digits with a required decimal point
     # total_amount_pattern = r'\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*(?:\.\d{2})?)\b'
     # total_amount_pattern = r'\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*\.\d{2})\b'
-    # total_amount_pattern = r'(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d{1,3}(?:.\d{3})*(?:\.\d{2}))\b'
+    total_amount_pattern = r'(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d{1,3}(?:.\d{3})*(?:\.\d{2}))\b'
 
     # Updated regex pattern to capture the entire line containing the total amount
     total_amount_text_pattern = r'^(.*\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*(?:\.\d{2})?)\b.*)$'
@@ -185,17 +185,13 @@ def handle_extracted_info(amounts, dates):
     transactions = []
     print(len(amounts))
     print(len(dates))
-
-    for i in range(min(len(amounts), len(dates))):
-        print("---->", i)
-        print(amounts[i])
-        print(dates[i])
+    for i in range(len(amounts)):
         print("Amount title: ", amounts[i][0])
         print("Amount: ", amounts[i][1][0])
 
         data = {
             'title': amounts[i][0],
-            'date': parser.parse(dates[i]),
+            'date': parser.parse(dates[i]) if i < len(dates) else date.today(),
             'total_amount': amounts[i][1][0],
         }
         transasction_instance = Transaction(**data)
