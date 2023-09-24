@@ -158,7 +158,7 @@ def extract_receipt_info(recognized_text):
     # Updated regex pattern to capture the entire line containing the total amount
     total_amount_text_pattern = r'^(.*\b(?:[+-]?\s*)?(?:RM|\$|€|£|¥)?\s?(\d+(?:,\d{3})*(?:\.\d{2})?)\b.*)$'
     total_amount_text_matches = re.findall(total_amount_text_pattern, recognized_text, re.MULTILINE)
-    total_amount_matches = [item for item in [(item[0], re.findall(total_amount_pattern, item[0])) for item in total_amount_text_matches] if len(item[1]) > 0]
+    total_amount_matches = [item for item in [(re.sub(r'\b(RM|MYR)\b', '', re.sub(r'[0-9$€£¥.,~"\']', '', item[0])), re.findall(total_amount_pattern, item[0])) for item in total_amount_text_matches] if len(item[1]) > 0]
     
     # Extract dates using a more flexible date pattern
     # date_pattern = r'(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})|(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{2,4})'
@@ -187,12 +187,12 @@ def handle_extracted_info(amounts, dates):
     print(len(dates))
     for i in range(len(amounts)):
         print("Amount title: ", amounts[i][0])
-        print("Amount: ", amounts[i][1][0])
+        print("Amount: ", amounts[i][1][0].rsplit('.', 1)[0].replace('.', '') + '.' + amounts[i][1][0].rsplit('.', 1)[1])
 
         data = {
             'title': amounts[i][0],
             'date': parser.parse(dates[i]) if i < len(dates) else date.today(),
-            'total_amount': amounts[i][1][0],
+            'total_amount': amounts[i][1][0].rsplit('.', 1)[0].replace('.', '') + '.' + amounts[i][1][0].rsplit('.', 1)[1],
         }
         transasction_instance = Transaction(**data)
         transactions.append(transasction_instance)

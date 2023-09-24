@@ -29,6 +29,7 @@ class Transaction(models.Model):
         return f'Transaction: {self.title} - {self.total_amount} - {self.date}'
 
 class IncomeCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='income_category')
     category_name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -53,6 +54,7 @@ class Transfer(models.Model):
         return f'{self.user.username} transfer {self.transaction.total_amount} from {self.withdrawed_account} to {self.deposited_account}'
 
 class ExpenseCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense_category')
     category_name = models.CharField(max_length=255)
 
     def __str__(self):
