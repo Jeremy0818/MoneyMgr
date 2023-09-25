@@ -63,9 +63,7 @@ function Register() {
             });
     };
 
-    const handleRegister = (e) => {
-        e.preventDefault();
-
+    const handleRegister = () => {
         // Fetch the CSRF token
         fetch('/api/get-csrf-token/')
             .then((response) => response.json())
