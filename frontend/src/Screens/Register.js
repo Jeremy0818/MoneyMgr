@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 import { HelpModal } from './HelpModal';
 import { useAuth } from '../Utils/AuthContext';
+import { RedirectModal } from './RedirectModal';
 
 function Register() {
     const [username, setUsername] = useState('');
@@ -13,6 +14,9 @@ function Register() {
     const [help, setHelp] = useState({});
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [helpModalContent, setHelpModalContent] = useState('');
+    const [showHRedirectModal, setShowRedirectModal] = useState(false);
+    const [redirectModalContent, setRedirectModalContent] = useState('');
+    const [redirectPath, setRedirectPath] = useState('/');
     const { logout } = useAuth();
 
     useEffect(() => {
@@ -51,7 +55,6 @@ function Register() {
                         if (response.ok) {
                             response.json().then((data) => {
                                 // Set individual field errors
-                                console.log(data.help);
                                 setHelp(data.help || {});
                             });
                         }
@@ -63,7 +66,9 @@ function Register() {
             });
     };
 
-    const handleRegister = () => {
+    const handleRegister = (e) => {
+        e.preventDefault();
+
         // Fetch the CSRF token
         fetch('/api/get-csrf-token/')
             .then((response) => response.json())
@@ -90,12 +95,12 @@ function Register() {
                         if (response.ok) {
                             // Registration successful
                             setRegistrationStatus('success');
+                            setTimeout(() => handleRedirect(), 1000);
                         } else {
                             // Registration failed
                             setRegistrationStatus('error');
                             response.json().then((data) => {
                                 // Set individual field errors
-                                console.log(data.help);
                                 setErrors(data.error || {});
                                 setHelp(data.help || {});
                             });
@@ -111,6 +116,11 @@ function Register() {
 
     function toggleModal(fieldName) {
         openHelpModal(help[fieldName]);
+    }
+
+    const handleRedirect = () => {
+        setRedirectModalContent("Redirecting to landing page...");
+        setShowRedirectModal(true);
     }
 
     return (
@@ -216,6 +226,10 @@ function Register() {
                 show={showHelpModal}
                 onClose={closeHelpModal}
                 content={helpModalContent} />
+            <RedirectModal
+                show={showHRedirectModal}
+                content={redirectModalContent}
+                redirectPath={redirectPath} />
         </div>
     );
 }
