@@ -78,6 +78,7 @@ function ImageScan() {
         updatedList[updatedIndex].title = updatedItem.title;
         updatedList[updatedIndex].date = updatedItem.date;
         updatedList[updatedIndex].total_amount = updatedItem.total_amount;
+        updatedList[updatedIndex].category = updatedItem.category;
 
         // Update the itemList state
         setItemList(updatedList);
@@ -167,6 +168,7 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
         title: item.title,
         total_amount: item.total_amount,
         date: item.date,
+        category: item.category,
     });
 
     const [isSwiping, setIsSwiping] = useState(false);
@@ -177,6 +179,7 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
         editedDetails.title = item.title;
         editedDetails.date = item.date;
         editedDetails.total_amount = item.total_amount;
+        editedDetails.category = item.category;
         setSwipeX(0);
         setIsSwiping(false);
     }, [item]);
@@ -343,24 +346,56 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
             </div>
             <div className="additional-details">
                 <div>
+                    <label htmlFor={`title-${index}`}>Title:</label>
                     <input
                         type="text"
+                        id={`title-${index}`}
                         name="title"
                         value={editedDetails.title}
                         onChange={handleInputChange}
                     />
+                    <label htmlFor={`total_amount-${index}`}>Total Amount:</label>
                     <input
                         type="number"
+                        id={`total_amount-${index}`}
                         name="total_amount"
                         value={editedDetails.total_amount}
                         onChange={handleInputChange}
                     />
+                    <label htmlFor={`date-${index}`}>Date:</label>
                     <input
                         type="date"
+                        id={`date-${index}`}
                         name="date"
                         value={editedDetails.date}
                         onChange={handleInputChange}
                     />
+                    <label htmlFor={`category-${index}`}>Category:</label>
+                    <select
+                        id={`category-${index}`}
+                        name="category"
+                        value={editedDetails.category}
+                        onChange={handleInputChange}
+                    >
+                        <option value="Groceries">Groceries</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Dining">Dining</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Housing">Housing</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Communication">Communication</option>
+                        <option value="Gift">Gift</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Other">Other</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Bonus">Bonus</option>
+                        <option value="Business">Business</option>
+                        <option value="Extra">Extra</option>
+                        <option value="Credit Card Bill">Credit Card Bill</option>
+                        <option value="Saving">Saving</option>
+                    </select>
                     <button onClick={handleSave}>Save</button>
                     <button className='details-delete-button' onClick={handleDelete}>Delete</button>
                 </div>

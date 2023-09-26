@@ -250,13 +250,22 @@ img {
 }
 
 .custom-list-item.expanded .additional-details {
-    max-height: 200px;
+    max-height: fit-content;
     background-color: #fff;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 
-.additional-details input {
+.additional-details label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    width: 90%;
+    font-size: small;
+}
+
+.additional-details input, .additional-details select {
     width: 90%;
     padding: 5px;
     margin: 5px 0;
