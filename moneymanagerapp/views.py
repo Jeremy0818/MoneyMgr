@@ -165,6 +165,12 @@ def ocr_api(request):
 
     try:
         response_data = ocr(image_data)
+        user = request.user
+        categories = user.income_category.all()
+        for i in range(len(response_data['data'])):
+            print(response_data['data'][i])
+            response_data['data'][i]['category'] = categories[0].category_name
+        print(response_data['data'][0])
         return JsonResponse(response_data)
 
     except Exception as e:

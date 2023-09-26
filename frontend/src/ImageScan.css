@@ -139,27 +139,108 @@ img {
     transition: background-color 0.3s;
 }
 
+.custom-list-item {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.custom-list-item.swiping {
+    transform: translateX(-70px);
+}
+
+.custom-list-item .list-header {
+    height: 50px;
+    transition: background-color 0.3s;
+}
+
+.custom-list-item:hover {
+    background-color: #e0e0f0;
+}
+
+.custom-list-item .list-header p {
+    margin: 0;
+}
+
 .custom-list-item.expanded {
     background-color: #f0f0f0;
 }
 
 .list-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 
-.item-title {
-    color: #333;
-    font-weight: bold;
+.right-icon-container {
+    text-align: left;
+    width: 5%;
+}
+
+.left-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    background-color: #0073e6; /* Background color for the icon container */
+    color: #fff; /* Icon color */
+    border-radius: 50%; /* Make it a circle */
+    margin-right: 3%; /* Add margin to separate it from the title */
+    font-size: 20px; /* Adjust the icon size */
 }
 
 .icon.up,
 .icon.down {
     color: #333;
     font-size: 20px;
+}
+
+.title-container {
+    flex: 3;
+    text-align: center;
+    width: 70%;
+    padding: 0 10px; /* Add horizontal padding */
+}
+
+.item-title {
+    color: #333;
+}
+
+.item-price {
+    color: #333;
+    font-weight: bold;
+}
+
+.date-container {
+    flex: 1;
+    text-align: right;
+    width: 20%;
+}
+
+.item-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 10px;
+}
+
+.item-date p {
+    margin: 0;
+}
+
+/* Additional styling for the date at the top */
+.item-date p:first-child {
+    font-size: 14px; /* Adjust font size as needed for day/month */
+    color: #333;
+    font-weight: bold;
+}
+
+/* Additional styling for the year at the bottom */
+.item-date p:last-child {
+    font-size: 12px; /* Adjust font size as needed for the year */
+    color: #333;
 }
 
 .additional-details {
@@ -170,7 +251,6 @@ img {
 
 .custom-list-item.expanded .additional-details {
     max-height: 200px;
-    transition: max-height 0.3s;
     background-color: #fff;
     padding: 10px;
     border-bottom: 1px solid #ccc;
@@ -198,35 +278,6 @@ img {
 
 .additional-details button:hover {
     background-color: #0052a8;
-}
-
-/* Styling for the custom list item with swipe-to-delete functionality */
-.custom-list-item {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s;
-}
-
-.custom-list-item.swiping {
-    transform: translateX(-70px);
-}
-
-.custom-list-item .list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin: 0;
-    height: 50px;
-    transition: background-color 0.3s;
-}
-
-.custom-list-item:hover {
-    background-color: #e0e0f0;
-}
-
-.custom-list-item .list-header p {
-    margin: 0;
 }
 
 .custom-list-item .delete-button {

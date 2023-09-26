@@ -13,12 +13,14 @@
 /* Style for the entire menu */
 .sliding-menu {
     position: fixed;
-    top: 60%;
+    bottom: 0;
     transform: translate(-50%, 100%);
     max-width: 600px;
     width: 100%;
     /* Adjust the width as needed */
-    height: 40%;
+    min-height: 30%;
+    height: fit-content;
+    padding: 5%;
     background-color: white;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;

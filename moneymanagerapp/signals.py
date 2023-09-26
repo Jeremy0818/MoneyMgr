@@ -9,13 +9,13 @@ def create_expense_category(sender, instance, created, **kwargs):
     if created:
         user = instance
         # Create an instance of ExpenseCategory when a new User is created
-        ExpenseCategory.objects.create(category_name="Grocery", user=user)
-        ExpenseCategory.objects.create(category_name="Electricity/Meter Bill", user=user)
+        ExpenseCategory.objects.create(category_name="Groceries", user=user)
+        ExpenseCategory.objects.create(category_name="Utilities", user=user)
         ExpenseCategory.objects.create(category_name="Transportation", user=user)
-        ExpenseCategory.objects.create(category_name="Eating Out", user=user)
+        ExpenseCategory.objects.create(category_name="Dining", user=user)
         ExpenseCategory.objects.create(category_name="Entertainment", user=user)
         ExpenseCategory.objects.create(category_name="Housing", user=user)
-        ExpenseCategory.objects.create(category_name="Travelling", user=user)
+        ExpenseCategory.objects.create(category_name="Travel", user=user)
         ExpenseCategory.objects.create(category_name="Communication", user=user)
         ExpenseCategory.objects.create(category_name="Gift", user=user)
         ExpenseCategory.objects.create(category_name="Medical", user=user)

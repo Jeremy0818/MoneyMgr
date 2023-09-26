@@ -5,6 +5,9 @@ import '../ImageScan.css';
 import { uploadImage } from '../Utils/RequestHelper';
 import { FaChevronLeft, FaTrash } from 'react-icons/fa';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { BiCartAlt, BiBus, BiFoodMenu, BiCamera, BiHomeHeart, BiWorld, BiPhoneCall, BiGift, BiDollar, BiShoppingBag, BiDotsHorizontalRounded, BiMoney, BiTrophy, BiBriefcase, BiPlus, BiCreditCardFront } from 'react-icons/bi';
+import { RiBillLine } from 'react-icons/ri';
+import { GiPiggyBank } from 'react-icons/gi';
 
 function ImageScan() {
     const { isAuthenticated } = useAuth();
@@ -178,6 +181,67 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
         setIsSwiping(false);
     }, [item]);
 
+    // Determine the appropriate icon based on the category
+    let categoryIcon;
+    switch (item.category) {
+        case 'Groceries':
+            categoryIcon = <BiCartAlt />;
+            break;
+        case 'Utilities':
+            categoryIcon = <RiBillLine />;
+            break;
+        case 'Transportation':
+            categoryIcon = <BiBus />;
+            break;
+        case 'Dining':
+            categoryIcon = <BiFoodMenu />;
+            break;
+        case 'Entertainment':
+            categoryIcon = <BiCamera />;
+            break;
+        case 'Housing':
+            categoryIcon = <BiHomeHeart />;
+            break;
+        case 'Travel':
+            categoryIcon = <BiWorld />;
+            break;
+        case 'Communication':
+            categoryIcon = <BiPhoneCall />;
+            break;
+        case 'Gift':
+            categoryIcon = <BiGift />;
+            break;
+        case 'Medical':
+            categoryIcon = <BiDollar />;
+            break;
+        case 'Shopping':
+            categoryIcon = <BiShoppingBag />;
+            break;
+        case 'Other':
+            categoryIcon = <BiDotsHorizontalRounded />;
+            break;
+        case 'Salary':
+            categoryIcon = <BiMoney />;
+            break;
+        case 'Bonus':
+            categoryIcon = <BiTrophy />;
+            break;
+        case 'Business':
+            categoryIcon = <BiBriefcase />;
+            break;
+        case 'Extra':
+            categoryIcon = <BiPlus />;
+            break;
+        case 'Credit Card Bill':
+            categoryIcon = <BiCreditCardFront />;
+            break;
+        case 'Saving':
+            categoryIcon = <GiPiggyBank />;
+            break;
+        default:
+            categoryIcon = <BiDotsHorizontalRounded />;
+    }
+
     const toggleExpansion = () => {
         setExpanded(!expanded);
     };
@@ -238,6 +302,19 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
         }
     };
 
+    function formatDate(inputDate) {
+        const date = new Date(inputDate);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return (
+            <div className="item-date">
+                <p>{`${day}/${month}`}</p>
+                <p>{year}</p>
+            </div>
+        );
+    }
+
     return (
         <div
             className={`custom-list-item ${expanded ? "expanded" : ""} ${isSwiping ? "swiping" : ""}`}
@@ -246,12 +323,23 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
             onTouchEnd={handleTouchEnd}
         >
             <div className="list-header" onClick={toggleExpansion}>
-                <p className="item-title">{item.title} - ${item.total_amount}</p>
-                {expanded ? (
-                    <FiChevronUp className="icon up" />
-                ) : (
-                    <FiChevronDown className="icon down"/>
-                )}
+                <div className="left-icon-container">
+                    {categoryIcon}
+                </div>
+                <div className="title-container">
+                    <p className="item-title">{item.title}</p>
+                    <p className="item-price">${item.total_amount}</p>
+                </div>
+                <div className="date-container">
+                    {formatDate(item.date)}
+                </div>
+                <div className="right-icon-container">
+                    {expanded ? (
+                        <FiChevronUp className="icon up" />
+                    ) : (
+                        <FiChevronDown className="icon down" />
+                    )}
+                </div>
             </div>
             <div className="additional-details">
                 <div>
