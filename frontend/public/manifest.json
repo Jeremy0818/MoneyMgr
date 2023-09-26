@@ -1,6 +1,6 @@
 {
     "name": "Money Manager App",
-    "short_name": "moneyMgr",
+    "short_name": "SimplifAI",
     "start_url": "/static/index.html",
     "icons": [
         {

@@ -6,11 +6,13 @@
     position: fixed;
     bottom: 0;
     width: 100%;
+    max-width: 500px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 10px 0;
     border-top: 1px solid #555; /* Darker border for separation */
+    border-radius: 20px;
     z-index: 1000;
 }
 
@@ -26,7 +28,7 @@
 
 /* Optional icon style */
 .nav-link {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 5px;
     color: white;
     display: flex;
