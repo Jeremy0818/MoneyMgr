@@ -20,7 +20,7 @@ def create_expense_category(sender, instance, created, **kwargs):
         ExpenseCategory.objects.create(category_name="Gift", user=user)
         ExpenseCategory.objects.create(category_name="Medical", user=user)
         ExpenseCategory.objects.create(category_name="Shopping", user=user)
-        ExpenseCategory.objects.create(category_name="Other", user=user)
+        ExpenseCategory.objects.create(category_name="Miscellaneous", user=user)
         IncomeCategory.objects.create(category_name="Salary", user=user)
         IncomeCategory.objects.create(category_name="Bonus", user=user)
         IncomeCategory.objects.create(category_name="Business", user=user)

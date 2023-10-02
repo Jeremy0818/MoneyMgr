@@ -13,6 +13,7 @@ import NotFound from './Screens/NotFound';
 import NavBar from './Screens/NavBar';
 import SlidingMenu from './Screens/SlidingMenu';
 import ImageScan from './Screens/ImageScan';
+import Community from './Screens/Community';
 
 const App = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -37,6 +38,7 @@ const App = () => {
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/personal" element={<Personal />} />
                             <Route path="/analytic" element={<Analytic />} />
+                            <Route path="/community" element={<Community />} />
                             <Route path="/imagescan" element={<ImageScan />} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>

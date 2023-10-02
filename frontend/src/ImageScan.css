@@ -56,7 +56,6 @@
 
     .full-screen-image {
         height: 100%;
-        min-height: 0;
     }
 }
 
@@ -205,6 +204,7 @@ img {
 }
 
 .item-title {
+    font-size: medium;
     color: #333;
 }
 
