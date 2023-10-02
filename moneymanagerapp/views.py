@@ -166,11 +166,17 @@ def ocr_api(request):
     try:
         response_data = ocr(image_data)
         user = request.user
-        categories = user.expense_category.all()
+        exp_categories = list(user.expense_category.all().values_list('category_name', flat=True))
+        inc_categories = list(user.income_category.all().values_list('category_name', flat=True))
+        trn_categories = list(user.transfer_category.all().values_list('category_name', flat=True))
+        accounts = list(user.accounts.all().values_list('account_name', flat=True))
         for i in range(len(response_data['data'])):
-            print(response_data['data'][i])
-            response_data['data'][i]['category'] = categories[0].category_name
-        print(response_data['data'][0])
+            response_data['data'][i]['category'] = exp_categories[0]
+            response_data['data'][i]['account'] = accounts[0]
+        response_data['expense_categories'] = exp_categories
+        response_data['income_categories'] = inc_categories
+        response_data['transfer_categories'] = trn_categories
+        response_data['accounts'] = accounts
         return JsonResponse(response_data)
 
     except Exception as e:

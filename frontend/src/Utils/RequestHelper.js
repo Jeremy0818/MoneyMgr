@@ -60,9 +60,34 @@ export const uploadImage = async (image) => {
             return { data: null, error: data.error };
         }
 
-        return { data: data.data, error: null };
+        return { data: data, error: null };
     } catch (error) {
         console.error('Error:', error);
         return { data: null, error: error };
+    }
+}
+
+export const saveTransactions = async (transactions) => {
+    try {
+        // First, obtain the CSRF token
+        const csrfResponse = await axios.get('/api/get-csrf-token/');
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        const { token, refreshToken } = await getToken();
+
+        // Create custom headers with the refresh token and CSRF token
+        const customHeaders = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        };
+
+        const response = await axios.post('/api/transactions/', transactions, {
+            headers: customHeaders,
+        });
+        return;
+    } catch (error) {
+        console.error('Error:', error);
+        return;
     }
 }

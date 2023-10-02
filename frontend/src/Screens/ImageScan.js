@@ -14,6 +14,10 @@ function ImageScan() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [itemList, setItemList] = useState([]);
+    const [expCategories, setExpCategories] = useState([]);
+    const [incCategories, setIncCategories] = useState([]);
+    const [trnCategories, setTrnCategories] = useState([]);
+    const [accounts, setAccounts] = useState([]);
     const topHalfRef = useRef(null);
     const bottomHalfRef = useRef(null);
     const navigate = useNavigate();
@@ -46,10 +50,14 @@ function ImageScan() {
             // Set the selected image in the state
             setIsLoading(true);
             const { data, error } = await uploadImage(selectedFile);
-            console.log(data);
+            console.log(data.data);
             setIsLoading(false);
             if (error == null) {
-                setItemList(data);
+                setItemList(data.data);
+                setExpCategories(data.expense_categories);
+                setIncCategories(data.income_categories);
+                setTrnCategories(data.transfer_categories);
+                setAccounts(data.accounts);
                 setSelectedImage(URL.createObjectURL(selectedFile));
             }
         }
@@ -83,6 +91,8 @@ function ImageScan() {
         updatedList[updatedIndex].date = updatedItem.date;
         updatedList[updatedIndex].total_amount = updatedItem.total_amount;
         updatedList[updatedIndex].category = updatedItem.category;
+        updatedList[updatedIndex].type = updatedItem.type;
+        updatedList[updatedIndex].account = updatedItem.account;
 
         // Update the itemList state
         setItemList(updatedList);
@@ -134,6 +144,10 @@ function ImageScan() {
                         handleScroll={handleScroll}
                         handleDelete={handleDelete}
                         updateListItem={updateListItem}
+                        expCategory={expCategories}
+                        incCategory={incCategories}
+                        trnCategory={trnCategories}
+                        accounts={accounts}
                     />
                 </div>
             ) : (

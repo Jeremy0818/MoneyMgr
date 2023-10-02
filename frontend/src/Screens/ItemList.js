@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import { BiCartAlt, BiBus, BiFoodMenu, BiCamera, BiHomeHeart, BiWorld, BiPhoneCall, BiGift, BiDollar, BiShoppingBag, BiDotsHorizontalRounded, BiMoney, BiTrophy, BiBriefcase, BiPlus, BiCreditCardFront } from 'react-icons/bi';
+import { BiCartAlt, BiBus, BiCamera, BiHomeHeart, BiWorld, BiPhoneCall, BiGift, BiDollar, BiShoppingBag, BiDotsHorizontalRounded, BiMoney, BiTrophy, BiBriefcase, BiPlus, BiCreditCardFront } from 'react-icons/bi';
 import { RiBillLine } from 'react-icons/ri';
 import { GiPiggyBank } from 'react-icons/gi';
+import { ImSpoonKnife } from 'react-icons/im';
 
-function ItemList({ itemList, bottomHalfRef, handleScroll, handleDelete, updateListItem }) {
+function ItemList({ itemList, bottomHalfRef, handleScroll, handleDelete, updateListItem, expCategory, incCategory, trnCategory, accounts }) {
     return (
         itemList.length > 0 ?
             <div ref={bottomHalfRef} onScroll={handleScroll} className="bottom-half">
@@ -15,7 +16,11 @@ function ItemList({ itemList, bottomHalfRef, handleScroll, handleDelete, updateL
                         index={index}
                         item={item}
                         onUpdateItem={updateListItem}
-                        onDeleteItem={handleDelete} />
+                        onDeleteItem={handleDelete}
+                        expCategory={expCategory}
+                        incCategory={incCategory}
+                        trnCategory={trnCategory}
+                        accounts={accounts} />
                 ))}
             </div>
             :
@@ -24,13 +29,15 @@ function ItemList({ itemList, bottomHalfRef, handleScroll, handleDelete, updateL
 }
 
 // Custom list item component with a container class
-function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
+function CustomListItem({ index, item, onUpdateItem, onDeleteItem, expCategory, incCategory, trnCategory, accounts }) {
     const [expanded, setExpanded] = useState(false);
     const [editedDetails, setEditedDetails] = useState({
         title: item.title,
         total_amount: item.total_amount,
         date: item.date,
         category: item.category,
+        account: item.account,
+        type: "expense",
     });
 
     const [isSwiping, setIsSwiping] = useState(false);
@@ -59,7 +66,7 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
             categoryIcon = <BiBus />;
             break;
         case 'Dining':
-            categoryIcon = <BiFoodMenu />;
+            categoryIcon = <ImSpoonKnife />;
             break;
         case 'Entertainment':
             categoryIcon = <BiCamera />;
@@ -116,15 +123,21 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
         setEditedDetails({
             ...editedDetails,
             [name]: value,
+            ...(name === 'type' && { category: '' }),
         });
     };
 
     const handleSave = () => {
-        // Update the item object with the edited details
-        const updatedItem = { ...editedDetails };
-        const updatedIndex = index;
-        onUpdateItem(updatedIndex, updatedItem);
-        setExpanded(false);
+        if (editedDetails.category !== "") {
+            // Update the item object with the edited details
+            const updatedItem = { ...editedDetails };
+            const updatedIndex = index;
+            onUpdateItem(updatedIndex, updatedItem);
+            setExpanded(false);
+        } else {
+            // Notify the user that a category must be selected before saving
+            alert('Please select a category before saving.');
+        }
     };
 
     const handleDelete = () => {
@@ -232,6 +245,17 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
                         value={editedDetails.date}
                         onChange={handleInputChange}
                     />
+                    <label htmlFor={`type-${index}`}>Type:</label>
+                    <select
+                        id={`type-${index}`}
+                        name="type"
+                        value={editedDetails.type}
+                        onChange={handleInputChange}
+                    >
+                        <option value="expense">expense</option>
+                        <option value="income">income</option>
+                        <option value="transfer">transfer</option>
+                    </select>
                     <label htmlFor={`category-${index}`}>Category:</label>
                     <select
                         id={`category-${index}`}
@@ -239,24 +263,30 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem }) {
                         value={editedDetails.category}
                         onChange={handleInputChange}
                     >
-                        <option value="Groceries">Groceries</option>
-                        <option value="Utilities">Utilities</option>
-                        <option value="Transportation">Transportation</option>
-                        <option value="Dining">Dining</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Housing">Housing</option>
-                        <option value="Travel">Travel</option>
-                        <option value="Communication">Communication</option>
-                        <option value="Gift">Gift</option>
-                        <option value="Medical">Medical</option>
-                        <option value="Shopping">Shopping</option>
-                        <option value="Other">Other</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Bonus">Bonus</option>
-                        <option value="Business">Business</option>
-                        <option value="Extra">Extra</option>
-                        <option value="Credit Card Bill">Credit Card Bill</option>
-                        <option value="Saving">Saving</option>
+                        <option value="">Please select an option</option>
+                        {editedDetails.type == "expense" ?
+                            expCategory.map((category) => (
+                                <option value={category}>{category}</option>
+                            ))
+                            :
+                            editedDetails.type == "income" ?
+                                incCategory.map((category) => (
+                                    <option value={category}>{category}</option>
+                                )) :
+                                trnCategory.map((category) => (
+                                    <option value={category}>{category}</option>
+                                ))}
+                    </select>
+                    <label htmlFor={`account-${index}`}>Account:</label>
+                    <select
+                        id={`account-${index}`}
+                        name="account"
+                        value={editedDetails.account}
+                        onChange={handleInputChange}
+                    >
+                        {accounts.map((account) => (
+                            <option value={account}>{account}</option>
+                        ))}
                     </select>
                     <button onClick={handleSave}>Save</button>
                     <button className='details-delete-button' onClick={handleDelete}>Delete</button>
