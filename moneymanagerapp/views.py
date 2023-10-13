@@ -13,14 +13,18 @@ from django import forms
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
-
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from decimal import Decimal
 import json
 
-from .utils import ocr
+from .models import *
 from .serializers import CustomUserSerializer
+from .utils import ocr
+
+class InvalidTransactionTypeError(Exception):
+    pass
 
 JWTAuthentication.USER_ID_CLAIM = 'user_id'
 
@@ -173,12 +177,46 @@ def ocr_api(request):
         for i in range(len(response_data['data'])):
             response_data['data'][i]['category'] = exp_categories[0]
             response_data['data'][i]['account'] = accounts[0]
+            response_data['data'][i]['type'] = "expense"
         response_data['expense_categories'] = exp_categories
         response_data['income_categories'] = inc_categories
         response_data['transfer_categories'] = trn_categories
         response_data['accounts'] = accounts
         return JsonResponse(response_data)
 
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def transaction_api(request):
+    try:
+        user = request.user
+        data = json.loads(request.body)
+        print("here")
+        for item in data:
+            transaction = Transaction(title=item['title'], date=item['date'], total_amount=item['total_amount'])
+            transaction.save()
+            if item['type'] == "expense":
+                category = ExpenseCategory.objects.get(user=user, category_name=item['category'])
+                account = Account.objects.get(user=user, account_name=item['account'])
+                account.balance -= Decimal(item['total_amount'])
+                account.save()
+                expense = Expense(user=user, transaction=transaction, expense_category=category, withdrawed_account=account)
+                expense.save()
+            elif item['type'] == "income":
+                category = IncomeCategory.objects.get(user=user, category_name=item['category'])
+                account = Account.objects.get(user=user, account_name=item['account'])
+                account.balance += Decimal(item['total_amount'])
+                account.save()
+                income = Income(user=user, transaction=transaction, income_category=category, deposited_account=account)
+                income.save()
+            elif item['type'] == "transfer":
+                pass
+            else:
+                raise InvalidTransactionTypeError(f"Invalid transaction type received: %s".format(item['type']))
+        return JsonResponse({"status": "success"})
     except Exception as e:
         print(e)
         return JsonResponse({'error': str(e)}, status=500)

@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/ocr/', ocr_api, name='api-ocr'),
     path('api/register/', register_api, name='api-register'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='api-token-refresh'),
+    path('api/transaction/', transaction_api, name='api-transaction'),
     
     # Views urls
     path('', Index.as_view(), name='index'),

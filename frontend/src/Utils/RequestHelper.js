@@ -82,10 +82,18 @@ export const saveTransactions = async (transactions) => {
             'X-CSRFToken': csrfToken,
         };
 
-        const response = await axios.post('/api/transactions/', transactions, {
+        const response = await axios.post('/api/transaction/', transactions, {
             headers: customHeaders,
         });
-        return;
+        
+        const data = response.data;
+
+        if (data.error) {
+            console.log(data.error);
+            return { data: null, error: data.error };
+        }
+
+        return { data: data, error: null };
     } catch (error) {
         console.error('Error:', error);
         return;

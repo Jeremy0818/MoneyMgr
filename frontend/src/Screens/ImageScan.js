@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 import '../ImageScan.css';
-import { uploadImage } from '../Utils/RequestHelper';
+import { uploadImage, saveTransactions } from '../Utils/RequestHelper';
 import { FaChevronLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ImageView from './ImageView';
@@ -68,9 +68,14 @@ function ImageScan() {
         setIsFullScreen(!isFullScreen);
     };
 
-    function handleDone() {
-        // Perform any actions you want when the "Done" button is clicked
-        // For example, submit the selected image or close a modal
+    async function handleDone() {
+        const { data, error } = await saveTransactions(itemList);
+        if (error) {
+            alert(error);
+        } else {
+            console.log(data.status);
+            navigate("/home");
+        }
     }
 
     function handleCancel() {
