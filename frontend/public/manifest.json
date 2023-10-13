@@ -1,7 +1,7 @@
 {
     "name": "Money Manager App",
     "short_name": "SimplifAI",
-    "start_url": "/static/index.html",
+    "start_url": "/",
     "icons": [
         {
             "src": "/static/android-chrome-192x192.png",

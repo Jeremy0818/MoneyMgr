@@ -121,7 +121,6 @@ function ImageScan() {
                     <input
                         type="file"
                         accept="image/*"
-                        capture="camera"
                         id="fileInput"
                         style={{ display: "none" }}
                         onChange={handleFileSelect} // Call handleFileSelect when a file is chosen
