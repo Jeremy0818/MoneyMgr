@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 
-function Profile() {
+function Profile({setTitle, setShowBackButton, setShowDoneButton, setHandleBack, setHandleDone}) {
     const { user, logout, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        setTitle("Profile");
+        setShowBackButton(false);
+        setShowDoneButton(false);
+        setHandleBack({func: null});
+        setHandleDone({func: null});
+    }, []);
 
     return (
         <div>
             {isAuthenticated() ? (
                 <div>
-                    <h1>Profile</h1>
                     <p>Hello, {user.userInfo.username}!</p>
                     <button onClick={logout}>Logout</button>
                 </div>

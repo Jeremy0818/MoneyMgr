@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../SlidingMenu.css';
+import './SlidingMenu.css';
 import { useNavigate } from 'react-router-dom';
 
 const SlidingMenu = ({ isOpen, onClose }) => {

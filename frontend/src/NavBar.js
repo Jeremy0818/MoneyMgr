@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { useAuth } from '../Utils/AuthContext'; // Adjust the import path
-import '../NavBar.css';
+import { useAuth } from './Utils/AuthContext'; // Adjust the import path
+import './NavBar.css';
 import { FaHome, FaUser, FaMoneyBill, FaChartBar, FaPlusCircle } from 'react-icons/fa';
 
 export default function NavBar({ toggleMenu }) {

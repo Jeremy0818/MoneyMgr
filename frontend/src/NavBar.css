@@ -2,9 +2,9 @@
 
 /* Style for the navigation bar container */
 .navbar-container {
-    background-color: #333; /* Dark background color for night mode */
+    background-color: #282c34; /* Dark background color for night mode */
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
     max-width: 500px;
     display: flex;

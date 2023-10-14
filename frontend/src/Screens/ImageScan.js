@@ -1,14 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 import '../ImageScan.css';
 import { uploadImage, saveTransactions } from '../Utils/RequestHelper';
-import { FaChevronLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ImageView from './ImageView';
 import ItemList from './ItemList';
 
-function ImageScan() {
+function ImageScan({ setTitle, setShowBackButton, setShowDoneButton, setHandleBack, setHandleDone }) {
     const { isAuthenticated } = useAuth();
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -21,6 +20,14 @@ function ImageScan() {
     const topHalfRef = useRef(null);
     const bottomHalfRef = useRef(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setTitle("Smart Scan");
+        setShowBackButton(true);
+        setShowDoneButton(true);
+        setHandleBack({func: handleCancel});
+        setHandleDone({func: handleDone});
+    }, []);
 
     // Function to handle the scroll event
     function handleScroll() {
@@ -79,11 +86,9 @@ function ImageScan() {
     }
 
     function handleCancel() {
-        // Perform any actions you want when the "Cancel" button is clicked
-        // For example, clear the selected image and item list
         setSelectedImage(null);
         setItemList([]);
-        navigate('/home');
+        navigate("/home");
     }
 
     function updateListItem(updatedIndex, updatedItem) {
@@ -115,14 +120,14 @@ function ImageScan() {
         <div>
             {isAuthenticated() ? (
                 <div className='image-scan-container'>
-                    <div className="header">
+                    {/* <div className="header">
                         <button className="cancel-button" onClick={handleCancel}>
                             <FaChevronLeft />
                         </button>
                         {selectedImage && itemList.length > 0 ? (
                             <button className="done-button" onClick={handleDone}>Done</button>
                         ) : null}
-                    </div>
+                    </div> */}
                     <input
                         type="file"
                         accept="image/*"

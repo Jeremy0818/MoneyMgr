@@ -16,8 +16,7 @@
     bottom: 0;
     transform: translate(-50%, 100%);
     max-width: 600px;
-    width: 100%;
-    /* Adjust the width as needed */
+    width: 90%;
     min-height: 30%;
     height: fit-content;
     padding: 5%;
@@ -47,14 +46,12 @@
     /* Vertically center the content */
     height: 100%;
     /* Fill the entire height of the menu */
-}
-
-h2 {
     color: black;
 }
 
-button {
+.menu-content button {
     width: fit-content;
+    margin-top: 10px;
 }
 
 /* Overlay style */
