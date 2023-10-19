@@ -20,7 +20,7 @@ from decimal import Decimal
 import json
 
 from .models import *
-from .serializers import CustomUserSerializer
+from .serializers import *
 from .utils import ocr
 
 class InvalidTransactionTypeError(Exception):
@@ -220,3 +220,18 @@ def transaction_api(request):
     except Exception as e:
         print(e)
         return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def account_api(request):
+    if request.method == "GET":
+        try:
+            user = request.user
+            accounts = user.accounts.all()
+            serializer = AccountSerializer(accounts, many=True)
+            serialized_data = serializer.data
+            print(serialized_data)
+            return JsonResponse({"data": serialized_data})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)

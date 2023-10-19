@@ -9,8 +9,8 @@ function Home({ setTitle, setShowBackButton, setShowDoneButton, setHandleBack, s
         setTitle("Home");
         setShowBackButton(false);
         setShowDoneButton(false);
-        setHandleBack({func: null});
-        setHandleDone({func: null});
+        setHandleBack({ func: null });
+        setHandleDone({ func: null });
     }, []);
 
     return (

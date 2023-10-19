@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Utils/AuthContext';
 import { LoggedOut } from './LoggedOut';
 
-function Community({setTitle, setShowBackButton, setShowDoneButton, setHandleBack, setHandleDone}) {
+function Community({ setTitle, setShowBackButton, setShowDoneButton, setHandleBack, setHandleDone }) {
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         setTitle("Community");
         setShowBackButton(false);
         setShowDoneButton(false);
-        setHandleBack({func: null});
-        setHandleDone({func: null});
+        setHandleBack({ func: null });
+        setHandleDone({ func: null });
     }, []);
 
     return (
         <div>
-            { isAuthenticated() ? (
+            {isAuthenticated() ? (
                 <div>
                     <h1>Welcome</h1>
                     <p>Feed</p>

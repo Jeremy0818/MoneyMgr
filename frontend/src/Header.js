@@ -18,7 +18,7 @@ const Header = ({ title, showBackButton, showDoneButton, onBack, onDone }) => {
                     <FaChevronLeft />
                 </button>
             )}
-            <p className="header-title">{title}</p>
+            <h1 className="header-title">{title}</h1>
             {showDoneButton && (
                 <button className="done-button" onClick={onDone.func}>
                     Done

@@ -8,7 +8,7 @@ import Landing from './Screens/Landing';
 import Login from './Screens/Login';
 import Register from './Screens/Register';
 import Analytic from './Screens/Analytic';
-import Personal from './Screens/Personal';
+import Accounts from './Screens/Accounts';
 import NotFound from './Screens/NotFound';
 import NavBar from './NavBar';
 import SlidingMenu from './SlidingMenu';
@@ -63,8 +63,8 @@ const App = () => {
                                     setHandleBack={setHandleBack}
                                     setHandleDone={setHandleDone}
                                 />} />
-                            <Route path="/personal" element={
-                                <Personal
+                            <Route path="/accounts" element={
+                                <Accounts
                                     setTitle={setTitle}
                                     setShowBackButton={setShowBackButton}
                                     setShowDoneButton={setShowDoneButton}

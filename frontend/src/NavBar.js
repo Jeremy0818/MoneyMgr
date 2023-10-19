@@ -10,7 +10,7 @@ export default function NavBar({ toggleMenu }) {
     const { isAuthenticated } = useAuth();
     const location = useLocation();
 
-    const allowedRoutes = ['/home', '/personal', '/analytic', '/community'];
+    const allowedRoutes = ['/home', '/accounts', '/analytic', '/community'];
 
     // Render the navigation bar only if the user is logged in
     if (!isAuthenticated() || !allowedRoutes.includes(location.pathname)) {
@@ -26,9 +26,9 @@ export default function NavBar({ toggleMenu }) {
                 </NavLink>
             </Nav>
             <Nav className="nav-item">
-                <NavLink to="/personal" className="nav-link">
+                <NavLink to="/accounts" className="nav-link">
                     <FaMoneyBill />
-                    <span className="nav-label">Personal</span>
+                    <span className="nav-label">Accounts</span>
                 </NavLink>
             </Nav>
             <Nav className="nav-item">

@@ -25,8 +25,8 @@ function ImageScan({ setTitle, setShowBackButton, setShowDoneButton, setHandleBa
         setTitle("Smart Scan");
         setShowBackButton(true);
         setShowDoneButton(true);
-        setHandleBack({func: handleCancel});
-        setHandleDone({func: handleDone});
+        setHandleBack({ func: handleCancel });
+        setHandleDone({ func: handleDone });
     }, []);
 
     // Function to handle the scroll event

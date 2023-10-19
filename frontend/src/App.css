@@ -1,6 +1,10 @@
 /* App.css */
-.body {
+html, body {
     background-color: #282c34;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
 /* Global styles (existing styles) */
