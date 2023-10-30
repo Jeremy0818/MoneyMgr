@@ -14,7 +14,7 @@ function Profile({ setTitle, setShowBackButton, setShowDoneButton, setHandleBack
     }, []);
 
     return (
-        <div>
+        <div className='screen-container'>
             {isAuthenticated() ? (
                 <div>
                     <p>Hello, {user.userInfo.username}!</p>

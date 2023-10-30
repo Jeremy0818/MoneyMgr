@@ -14,7 +14,7 @@ function Analytic({ setTitle, setShowBackButton, setShowDoneButton, setHandleBac
     }, []);
 
     return (
-        <div>
+        <div className='screen-container'>
             {isAuthenticated() ? (
                 <div>
                     <p>Chart:</p>

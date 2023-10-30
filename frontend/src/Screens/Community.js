@@ -14,7 +14,7 @@ function Community({ setTitle, setShowBackButton, setShowDoneButton, setHandleBa
     }, []);
 
     return (
-        <div>
+        <div className='screen-container'>
             {isAuthenticated() ? (
                 <div>
                     <h1>Welcome</h1>

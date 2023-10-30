@@ -235,3 +235,38 @@ def account_api(request):
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def account_id_api(request, id):
+    if request.method == "GET":
+        try:
+            user = request.user
+            account = user.accounts.get(pk=id)
+            expenses = account.acc_expense.all()
+            incomes = account.acc_income.all()
+            acc_serializer = AccountSerializer(account)
+            acc_serialized_data = acc_serializer.data
+            exp_serializer = ExpenseSerializer(expenses, many=True)
+            exp_serialized_data = exp_serializer.data
+            inc_serializer = IncomeSerializer(incomes, many=True)
+            inc_serialized_data = inc_serializer.data
+            user = request.user
+            exp_categories = list(user.expense_category.all().values_list('category_name', flat=True))
+            inc_categories = list(user.income_category.all().values_list('category_name', flat=True))
+            trn_categories = list(user.transfer_category.all().values_list('category_name', flat=True))
+            accounts = list(user.accounts.all().values_list('account_name', flat=True))
+            return JsonResponse({
+                "data": {
+                    "account": acc_serialized_data,
+                    "expenses": exp_serialized_data,
+                    "incomes": inc_serialized_data,
+                    'expense_categories': exp_categories,
+                    'income_categories':inc_categories,
+                    'transfer_categories': trn_categories,
+                    'accounts': accounts,
+                }
+            })
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)

@@ -23,7 +23,32 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AccountSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Account
-        fields = ('account_name', 'balance')
+        fields = ('id', 'account_name', 'balance')
+
+class ExpenseCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExpenseCategory
+        fields = ('category_name',)
+
+class IncomeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IncomeCategory
+        fields = ('category_name',)
+
+class ExpenseSerializer(serializers.ModelSerializer):
+    transaction = TransactionSerializer()
+    category = ExpenseCategorySerializer()
+
+    class Meta:
+        model = Expense
+        fields = '__all__'
+
+class IncomeSerializer(serializers.ModelSerializer):
+    transaction = TransactionSerializer()
+    category = IncomeCategorySerializer()
+
+    class Meta:
+        model = Income
+        fields = '__all__'

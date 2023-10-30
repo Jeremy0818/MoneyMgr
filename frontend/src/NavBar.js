@@ -18,36 +18,38 @@ export default function NavBar({ toggleMenu }) {
     }
 
     return (
-        <Navbar className="navbar-container" bg="light" variant="light">
-            <Nav className="nav-item">
-                <NavLink to="/home" className="nav-link">
-                    <FaHome />
-                    <span className="nav-label">Home</span>
-                </NavLink>
-            </Nav>
-            <Nav className="nav-item">
-                <NavLink to="/accounts" className="nav-link">
-                    <FaMoneyBill />
-                    <span className="nav-label">Accounts</span>
-                </NavLink>
-            </Nav>
-            <Nav className="nav-item">
-                <NavLink className="nav-link plus" onClick={toggleMenu}>
-                    <FaPlusCircle />
-                </NavLink>
-            </Nav>
-            <Nav className="nav-item">
-                <NavLink to="/analytic" className="nav-link">
-                    <FaChartBar />
-                    <span className="nav-label">Analytic</span>
-                </NavLink>
-            </Nav>
-            <Nav className="nav-item">
-                <NavLink to="/community" className="nav-link">
-                    <FaUser />
-                    <span className="nav-label">Community</span>
-                </NavLink>
-            </Nav>
-        </Navbar>
+        <div className='navbar'>
+            <Navbar className="navbar-container" bg="light" variant="light">
+                <Nav className="nav-item">
+                    <NavLink to="/home" className="nav-link">
+                        <FaHome />
+                        <span className="nav-label">Home</span>
+                    </NavLink>
+                </Nav>
+                <Nav className="nav-item">
+                    <NavLink to="/accounts" className="nav-link">
+                        <FaMoneyBill />
+                        <span className="nav-label">Accounts</span>
+                    </NavLink>
+                </Nav>
+                <Nav className="nav-item">
+                    <NavLink className="nav-link plus" onClick={toggleMenu}>
+                        <FaPlusCircle />
+                    </NavLink>
+                </Nav>
+                <Nav className="nav-item">
+                    <NavLink to="/analytic" className="nav-link">
+                        <FaChartBar />
+                        <span className="nav-label">Analytic</span>
+                    </NavLink>
+                </Nav>
+                <Nav className="nav-item">
+                    <NavLink to="/community" className="nav-link">
+                        <FaUser />
+                        <span className="nav-label">Community</span>
+                    </NavLink>
+                </Nav>
+            </Navbar>
+        </div>
     );
 }

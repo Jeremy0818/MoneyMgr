@@ -1,0 +1,105 @@
+.carousel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    max-height: 500px;
+}
+
+.carousel-slide {
+    /* flex: 1;
+    text-align: center;
+    position: relative; */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    /* width: fit-content; */
+}
+
+.carousel-item {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.5s, opacity 0.5s;
+    /* Add opacity transition */
+}
+
+.carousel-item.active {
+    display: flex;
+    flex: 0 0 100%;
+    /* Show the active item */
+    transform: translateX(0);
+    opacity: 1;
+    /* Show the active item with a fade-in effect */
+}
+
+.carousel-item.next {
+    transform: translateX(100%);
+    opacity: 0;
+    /* Hide the next item with a fade-out effect */
+}
+
+.carousel-item.prev {
+    transform: translateX(-100%);
+    opacity: 0;
+    /* Hide the previous item with a fade-out effect */
+}
+
+.carousel-content {
+    width: 100%;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.carousel-indicator {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.carousel-indicator.active {
+    background: #007bff;
+}
+
+.carousel-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Centered between the two sides */
+    width: 100%;
+    /* Occupy the full width of the container */
+}
+
+.carousel-navigation .carousel-button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-navigation .carousel-button.prev {
+    margin-right: auto;
+    /* Push to the left */
+}
+
+.carousel-navigation .carousel-button.next {
+    margin-left: auto;
+    /* Push to the right */
+}

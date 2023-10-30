@@ -15,6 +15,7 @@ import SlidingMenu from './SlidingMenu';
 import ImageScan from './Screens/ImageScan';
 import Community from './Screens/Community';
 import Header from './Header';
+import AccountDetail from './Screens/AccountDetail';
 
 const App = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -65,6 +66,14 @@ const App = () => {
                                 />} />
                             <Route path="/accounts" element={
                                 <Accounts
+                                    setTitle={setTitle}
+                                    setShowBackButton={setShowBackButton}
+                                    setShowDoneButton={setShowDoneButton}
+                                    setHandleBack={setHandleBack}
+                                    setHandleDone={setHandleDone}
+                                />} />
+                            <Route path="/account/:id" element={
+                                <AccountDetail
                                     setTitle={setTitle}
                                     setShowBackButton={setShowBackButton}
                                     setShowDoneButton={setShowDoneButton}

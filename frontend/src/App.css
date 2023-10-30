@@ -1,5 +1,6 @@
 /* App.css */
-html, body {
+html,
+body {
     background-color: #282c34;
     margin: 0;
     padding: 0;
@@ -10,11 +11,8 @@ html, body {
 /* Global styles (existing styles) */
 .App {
     background-color: #282c34;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: 100vh;
+    width: 100vw;
     font-size: calc(10px + 2vmin);
     color: white;
 }
@@ -46,11 +44,13 @@ html, body {
 form,
 .landing-page,
 .login-page,
-.register-page {
+.register-page,
+.not-found-page {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100vh;
 }
 
 .landing-page button {
@@ -164,4 +164,57 @@ button:hover {
     cursor: pointer;
     margin-left: 5px;
     /* Adjust spacing between the icon and the field */
+}
+
+.screen-container {
+    padding-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.inner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.rounded-container {
+    border-radius: 15px;
+    padding: 10px;
+    background-color: #00AB66;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-container {
+    width: 80%;
+    margin: 20px;
+}
+
+.account-detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.account-name {
+    color: #1B4D3E;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.account-balance {
+    font-size: 2em;
+    font-weight: bold;
 }

@@ -57,9 +57,9 @@ function ImageScan({ setTitle, setShowBackButton, setShowDoneButton, setHandleBa
             // Set the selected image in the state
             setIsLoading(true);
             const { data, error } = await uploadImage(selectedFile);
-            console.log(data.data);
             setIsLoading(false);
             if (error == null) {
+                console.log(data.data);
                 setItemList(data.data);
                 setExpCategories(data.expense_categories);
                 setIncCategories(data.income_categories);
@@ -117,17 +117,9 @@ function ImageScan({ setTitle, setShowBackButton, setShowDoneButton, setHandleBa
     }
 
     return (
-        <div>
+        <div className='screen-container'>
             {isAuthenticated() ? (
                 <div className='image-scan-container'>
-                    {/* <div className="header">
-                        <button className="cancel-button" onClick={handleCancel}>
-                            <FaChevronLeft />
-                        </button>
-                        {selectedImage && itemList.length > 0 ? (
-                            <button className="done-button" onClick={handleDone}>Done</button>
-                        ) : null}
-                    </div> */}
                     <input
                         type="file"
                         accept="image/*"

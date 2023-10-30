@@ -1,11 +1,17 @@
 /* NavBar.css */
 
-/* Style for the navigation bar container */
-.navbar-container {
-    background-color: #282c34; /* Dark background color for night mode */
+.navbar {
     position: fixed;
     bottom: 10px;
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Style for the navigation bar container */
+.navbar-container {
+    background-color: #282c34; /* Dark background color for night mode */
+    
     max-width: 500px;
     display: flex;
     justify-content: space-around;
@@ -39,7 +45,7 @@
 
 /* Style for active navigation item */
 .nav-link.active {
-    color: #4267b2; /* Active item text color (Facebook blue) */
+    color: #7FFF00; /* Active item text color (Facebook blue) */
 }
 
 .nav-link.plus {

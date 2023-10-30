@@ -10,7 +10,7 @@ function ItemList({ itemList, bottomHalfRef, handleScroll, handleDelete, updateL
     return (
         itemList.length > 0 ?
             <div ref={bottomHalfRef} onScroll={handleScroll} className="bottom-half">
-                <h2 className='list-item-title'>Items</h2>
+                {/* <h2 className='list-item-title'>Transactions</h2> */}
                 {itemList.map((item, index) => (
                     <CustomListItem
                         index={index}

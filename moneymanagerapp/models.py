@@ -41,11 +41,11 @@ class IncomeCategory(models.Model):
 class Income(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incomes') # represent "One to Many" in reverse relation
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    income_category = models.ForeignKey(IncomeCategory, on_delete=models.SET_NULL, blank=True, null=True)
-    deposited_account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    category = models.ForeignKey(IncomeCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    deposited_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='acc_income')
     
     def __str__(self):
-        return f'{self.user.username} received {self.transaction.total_amount} on {self.income_category} in {self.deposited_account}'
+        return f'{self.user.username} received {self.transaction.total_amount} on {self.category} in {self.deposited_account}'
 
 class TransferCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transfer_category')
@@ -57,7 +57,7 @@ class TransferCategory(models.Model):
 class Transfer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transfers') # represent "One to Many" in reverse relation
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    transfer_category = models.ForeignKey(IncomeCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    category = models.ForeignKey(IncomeCategory, on_delete=models.SET_NULL, blank=True, null=True)
     withdrawed_account = models.ForeignKey(Account, on_delete=models.SET_NULL, blank=True, null=True, related_name='transfer_withdrawed_accounts')
     deposited_account = models.ForeignKey(Account, on_delete=models.SET_NULL, blank=True, null=True, related_name='transfer_deposited_accounts')
     
@@ -74,12 +74,12 @@ class ExpenseCategory(models.Model):
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expenses') # represent "One to Many" in reverse relation
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    expense_category = models.ForeignKey(ExpenseCategory, on_delete=models.SET_NULL, blank=True, null=True)
-    withdrawed_account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    category = models.ForeignKey(ExpenseCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    withdrawed_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='acc_expense')
     location = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self):
-        return f'{self.user.username} spent {self.transaction.total_amount} on {self.expense_category} using {self.withdrawed_account}'
+        return f'{self.user.username} spent {self.transaction.total_amount} on {self.category} using {self.withdrawed_account}'
 
 '''
 Group Record

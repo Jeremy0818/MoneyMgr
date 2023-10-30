@@ -14,7 +14,7 @@ function Home({ setTitle, setShowBackButton, setShowDoneButton, setHandleBack, s
     }, []);
 
     return (
-        <div>
+        <div className='screen-container'>
             {isAuthenticated() ? (
                 <div>
                     <h2>Reminders</h2>

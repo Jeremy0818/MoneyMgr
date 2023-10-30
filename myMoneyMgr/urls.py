@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='api-token-refresh'),
     path('api/transaction/', transaction_api, name='api-transaction'),
     path('api/account/', account_api, name='api-account'),
+    path('api/account/<int:id>/', account_id_api, name='api-account-id'),
     
     # Views urls
     path('', Index.as_view(), name='index'),

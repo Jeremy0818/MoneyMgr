@@ -100,7 +100,7 @@ export const saveTransactions = async (transactions) => {
     }
 }
 
-export const getAccountBalance = async () => {
+export const getAllAccount = async () => {
     try {
         // First, obtain the CSRF token
         const csrfResponse = await axios.get('/api/get-csrf-token/');
@@ -116,6 +116,39 @@ export const getAccountBalance = async () => {
         };
 
         const response = await axios.get('/api/account/', {
+            headers: customHeaders,
+        });
+        
+        const data = response.data;
+
+        if (data.error) {
+            console.log(data.error);
+            return { data: null, error: data.error };
+        }
+
+        return { data: data, error: null };
+    } catch (error) {
+        console.error('Error:', error);
+        return;
+    }
+}
+
+export const getAccount = async (id) => {
+    try {
+        // First, obtain the CSRF token
+        const csrfResponse = await axios.get('/api/get-csrf-token/');
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        const { token, refreshToken } = await getToken();
+
+        // Create custom headers with the refresh token and CSRF token
+        const customHeaders = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        };
+
+        const response = await axios.get('/api/account/'+id+'/', {
             headers: customHeaders,
         });
         

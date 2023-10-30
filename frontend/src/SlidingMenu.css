@@ -14,7 +14,7 @@
 .sliding-menu {
     position: fixed;
     bottom: 0;
-    transform: translate(-50%, 100%);
+    transform: translate(0, 100%);
     max-width: 600px;
     width: 90%;
     min-height: 30%;
@@ -33,7 +33,7 @@
 
 /* Additional styles for sliding in and fading in the menu */
 .sliding-menu.open {
-    transform: translate(-50%, 0);
+    transform: translate(0, 0);
     opacity: 1;
 }
 
