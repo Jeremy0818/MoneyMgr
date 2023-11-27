@@ -245,7 +245,7 @@ def account_id_api(request, id):
             account = user.accounts.get(pk=id)
             print(account)
             expenses = account.acc_expense.all().order_by('transaction__date')
-            incomes = account.acc_income.all()
+            incomes = account.acc_income.all().order_by('transaction__date')
             acc_serializer = AccountSerializer(account)
             acc_serialized_data = acc_serializer.data
             exp_serializer = ExpenseSerializer(expenses, many=True)
