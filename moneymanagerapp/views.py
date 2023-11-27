@@ -203,14 +203,14 @@ def transaction_api(request):
                 account = Account.objects.get(user=user, account_name=item['account'])
                 account.balance -= Decimal(item['total_amount'])
                 account.save()
-                expense = Expense(user=user, transaction=transaction, expense_category=category, withdrawed_account=account)
+                expense = Expense(user=user, transaction=transaction, category=category, withdrawed_account=account)
                 expense.save()
             elif item['type'] == "income":
                 category = IncomeCategory.objects.get(user=user, category_name=item['category'])
                 account = Account.objects.get(user=user, account_name=item['account'])
                 account.balance += Decimal(item['total_amount'])
                 account.save()
-                income = Income(user=user, transaction=transaction, income_category=category, deposited_account=account)
+                income = Income(user=user, transaction=transaction, category=category, deposited_account=account)
                 income.save()
             elif item['type'] == "transfer":
                 pass
@@ -243,7 +243,8 @@ def account_id_api(request, id):
         try:
             user = request.user
             account = user.accounts.get(pk=id)
-            expenses = account.acc_expense.all()
+            print(account)
+            expenses = account.acc_expense.all().order_by('transaction__date')
             incomes = account.acc_income.all()
             acc_serializer = AccountSerializer(account)
             acc_serialized_data = acc_serializer.data
