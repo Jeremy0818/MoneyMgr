@@ -37,7 +37,7 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem, expCategory, 
         date: item.date,
         category: item.category,
         account: item.account,
-        type: "expense",
+        type: "Expense",
     });
 
     const [isSwiping, setIsSwiping] = useState(false);
@@ -252,9 +252,9 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem, expCategory, 
                         value={editedDetails.type}
                         onChange={handleInputChange}
                     >
-                        <option value="expense">expense</option>
-                        <option value="income">income</option>
-                        <option value="transfer">transfer</option>
+                        <option value="Expense">expense</option>
+                        <option value="Income">income</option>
+                        <option value="Transfer">transfer</option>
                     </select>
                     <label htmlFor={`category-${index}`}>Category:</label>
                     <select
@@ -264,12 +264,12 @@ function CustomListItem({ index, item, onUpdateItem, onDeleteItem, expCategory, 
                         onChange={handleInputChange}
                     >
                         <option value="">Please select an option</option>
-                        {editedDetails.type == "expense" ?
+                        {editedDetails.type == "Expense" ?
                             expCategory.map((category) => (
                                 <option value={category}>{category}</option>
                             ))
                             :
-                            editedDetails.type == "income" ?
+                            editedDetails.type == "Income" ?
                                 incCategory.map((category) => (
                                     <option value={category}>{category}</option>
                                 )) :

@@ -58,7 +58,7 @@ function AccountDetail({ setTitle, setShowBackButton, setShowDoneButton, setHand
                 date: list[i].transaction.date,
                 category: list[i].category.category_name,
                 account: account.account_name,
-                type: "expense",
+                type: "Expense",
             }
             tempList.push(tempItem)
         }

@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/register/', register_api, name='api-register'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='api-token-refresh'),
     path('api/transaction/', transaction_api, name='api-transaction'),
+    path('api/transaction/<int:id>/', transaction_id_api, name='api-transaction-id'),
     path('api/account/', account_api, name='api-account'),
     path('api/account/<int:id>/', account_id_api, name='api-account-id'),
     

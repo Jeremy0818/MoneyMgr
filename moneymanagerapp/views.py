@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.db import IntegrityError
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
 from django.shortcuts import render
@@ -177,7 +177,7 @@ def ocr_api(request):
         for i in range(len(response_data['data'])):
             response_data['data'][i]['category'] = exp_categories[0]
             response_data['data'][i]['account'] = accounts[0]
-            response_data['data'][i]['type'] = "expense"
+            response_data['data'][i]['type'] = "Expense"
         response_data['expense_categories'] = exp_categories
         response_data['income_categories'] = inc_categories
         response_data['transfer_categories'] = trn_categories
@@ -194,32 +194,126 @@ def transaction_api(request):
     try:
         user = request.user
         data = json.loads(request.body)
-        print("here")
         for item in data:
-            transaction = Transaction(title=item['title'], date=item['date'], total_amount=item['total_amount'])
-            transaction.save()
-            if item['type'] == "expense":
-                category = ExpenseCategory.objects.get(user=user, category_name=item['category'])
-                account = Account.objects.get(user=user, account_name=item['account'])
-                account.balance -= Decimal(item['total_amount'])
-                account.save()
-                expense = Expense(user=user, transaction=transaction, category=category, withdrawed_account=account)
-                expense.save()
-            elif item['type'] == "income":
-                category = IncomeCategory.objects.get(user=user, category_name=item['category'])
-                account = Account.objects.get(user=user, account_name=item['account'])
-                account.balance += Decimal(item['total_amount'])
-                account.save()
-                income = Income(user=user, transaction=transaction, category=category, deposited_account=account)
-                income.save()
-            elif item['type'] == "transfer":
-                pass
-            else:
-                raise InvalidTransactionTypeError(f"Invalid transaction type received: %s".format(item['type']))
+            with transaction.atomic():
+                transaction_obj = Transaction(title=item['title'], date=item['date'], total_amount=item['total_amount'])
+                transaction_obj.save()
+                if item['type'] == "Expense":
+                    category = ExpenseCategory.objects.get(user=user, category_name=item['category'])
+                    account = Account.objects.get(user=user, account_name=item['account'])
+                    account.balance -= Decimal(item['total_amount'])
+                    account.save()
+                    expense = Expense(user=user, transaction=transaction_obj, category=category, withdrawed_account=account)
+                    expense.save()
+                elif item['type'] == "Income":
+                    category = IncomeCategory.objects.get(user=user, category_name=item['category'])
+                    account = Account.objects.get(user=user, account_name=item['account'])
+                    account.balance += Decimal(item['total_amount'])
+                    account.save()
+                    income = Income(user=user, transaction=transaction_obj, category=category, deposited_account=account)
+                    income.save()
+                elif item['type'] == "Transfer":
+                    pass
+                else:
+                    raise InvalidTransactionTypeError(f"Invalid transaction type received: %s".format(item['type']))
         return JsonResponse({"status": "success"})
     except Exception as e:
         print(e)
         return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def transaction_id_api(request, id):
+    if request.method == 'POST':
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            transaction_obj = Transaction.objects.get(id=id)
+
+            with transaction.atomic():
+                if data['type'] == "Expense":
+                    expense = Expense.objects.get(user=user, transaction=transaction_obj)
+                    if data['account'] != expense.withdrawed_account.account_name:
+                        # Undo previous calculation
+                        account = expense.withdrawed_account
+                        account.balance += transaction_obj.total_amount
+                        account.save()
+                        # Update account balance
+                        account = Account.objects.get(user=user, account_name=data['account'])
+                        account.balance -= Decimal(data['total_amount'])
+                        account.save()
+                    else:
+                        # Undo previous calculation
+                        expense.withdrawed_account.balance += transaction_obj.total_amount
+                        # Update account balance
+                        expense.withdrawed_account.balance -= Decimal(data['total_amount'])
+                    # Update Income fields
+                    category = ExpenseCategory.objects.get(user=user, category_name=data['category'])
+                    expense.category = category
+                    expense.withdrawed_account = Account.objects.get(user=user, account_name=data['account'])
+                    expense.save()
+                elif data['type'] == "Income":
+                    income = Income.objects.get(user=user, transaction=transaction_obj)
+                    if data['account'] != income.deposited_account.account_name:
+                        # Undo previous calculation
+                        account = income.deposited_account
+                        account.balance -= transaction_obj.total_amount
+                        account.save()
+                        # Update account balance
+                        account = Account.objects.get(user=user, account_name=data['account'])
+                        account.balance += Decimal(data['total_amount'])
+                        account.save()
+                    else:
+                        # Undo previous calculation
+                        income.deposited_account.balance -= transaction_obj.total_amount
+                        # Update account balance
+                        income.deposited_account.balance += Decimal(data['total_amount'])
+                    # Update Income fields
+                    category = IncomeCategory.objects.get(user=user, category_name=data['category'])
+                    income.category = category
+                    income.deposited_account = Account.objects.get(user=user, account_name=data['account'])
+                    income.save()
+                elif data['type'] == "Transfer":
+                    pass
+                else:
+                    raise InvalidTransactionTypeError(f"Invalid transaction type received: %s".format(data['type']))
+                
+                # Update transaction field
+                transaction_obj.title = data['title']
+                transaction_obj.date = data['date']
+                transaction_obj.total_amount = data['total_amount']
+                transaction_obj.save() # update the object in the database
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == 'DELETE':
+        try:
+            user = request.user
+            data = request.data
+            print(data)
+            transaction_obj = Transaction.objects.get(id=id)
+            # TODO: udpate account balance
+            with transaction.atomic():
+                if data['type'] == "Expense":
+                    expense = Expense.objects.get(user=user, transaction=transaction_obj)
+                    expense.withdrawed_account.balance += transaction_obj.total_amount
+                    expense.withdrawed_account.save()
+                    expense.delete()
+                elif data['type'] == "Income":
+                    income = Income.objects.get(user=user, transaction=transaction_obj)
+                    income.deposited_account.balance -= transaction_obj.total_amount
+                    income.deposited_account.save()
+                    income.delete()
+                elif data['type'] == "Transfer":
+                    pass
+                else:
+                    raise InvalidTransactionTypeError(f'Invalid transaction type received: %s' % (data['type']))
+                transaction_obj.delete() # update the object in the database
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
