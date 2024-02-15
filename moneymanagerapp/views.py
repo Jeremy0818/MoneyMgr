@@ -315,7 +315,7 @@ def transaction_id_api(request, id):
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def account_api(request):
     if request.method == "GET":
@@ -329,8 +329,18 @@ def account_api(request):
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "POST":
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            account_obj = Account(user=user, account_name=data['account_name'], balance=data['balance'])
+            account_obj.save()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def account_id_api(request, id):
     if request.method == "GET":
@@ -362,6 +372,28 @@ def account_id_api(request, id):
                     'accounts': accounts,
                 }
             })
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "PUT":
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            account = user.accounts.get(pk=id)
+            account.account_name = data['account_name']
+            account.balance = data['balance']
+            account.save()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "DELETE":
+        try:
+            user = request.user
+            account = user.accounts.get(pk=id)
+            print(account)
+            account.delete()
+            return JsonResponse({"status": "success"})
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)}, status=500)

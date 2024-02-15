@@ -6,14 +6,14 @@ Personal Record
 '''
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts') # represent "One to Many" in reverse relation
-    account_name = models.CharField(max_length=255)
+    account_name = models.CharField(max_length=255, unique=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.account_name
 
 class Label(models.Model):
-    label_name = models.CharField(max_length=255)
+    label_name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.label_name
@@ -33,7 +33,7 @@ class Attachment(models.Model):
 
 class IncomeCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='income_category')
-    category_name = models.CharField(max_length=255)
+    category_name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.category_name
@@ -49,7 +49,7 @@ class Income(models.Model):
 
 class TransferCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transfer_category')
-    category_name = models.CharField(max_length=255)
+    category_name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.category_name
@@ -66,7 +66,7 @@ class Transfer(models.Model):
 
 class ExpenseCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense_category')
-    category_name = models.CharField(max_length=255)
+    category_name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.category_name
@@ -85,7 +85,7 @@ class Expense(models.Model):
 Group Record
 '''
 class Group(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
 class SharedExpense(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='shared_expenses') # represent "One to Many" in reverse relation
@@ -107,7 +107,7 @@ class SplitExpense(models.Model):
         return f'{self.user.username} paid {self.paid_amount}, actual expense {self.actual_expense}'
 
 class SettlementStatus(models.Model):
-    status = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.status

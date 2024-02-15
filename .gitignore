@@ -162,3 +162,9 @@ cython_debug/
 moneymanagerapp/templates/
 
 .DS_Store
+
+*.jpg
+*.JPG
+*.png
+*.PNG
+*.ipynb

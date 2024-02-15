@@ -14,6 +14,7 @@ from .serializers import TransactionSerializer
 
 def ocr(image_data):
     img = Image.open(image_data)
+    img = detect_boundary(img)
     img = preprocess_image(img)
 
     # Recognize text using OpenCV and Tesseract
@@ -45,6 +46,46 @@ def preprocess_image(img):
     img = img.filter(ImageFilter.GaussianBlur(radius=0.5))
 
     return img
+
+def preprocess(image):
+    """
+    Preprocess the receipt image without NAp.
+
+    Args:
+        image: The receipt image in OpenCV format.
+
+    Returns:
+        The preprocessed image and extracted text lines (optional).
+    """
+    # Convert to grayscale (if necessary)
+    if len(image.shape) > 2:
+        grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        grayscale_image = image.copy()
+    
+    WIN_SIZE = (7, 7)
+    # Apply blur for noise reduction (optional)
+    blurred_image = cv2.GaussianBlur(grayscale_image, WIN_SIZE, 0.)
+
+    # Apply CLAHE
+    clahe = cv2.createCLAHE(clipLimit=0.6, tileGridSize=WIN_SIZE)
+    clahe_image = clahe.apply(blurred_image)
+
+    # Apply Otsu's Binarization to get global threshold
+    otsu_thresh_value, otsu_thresh = cv2.threshold(clahe_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    binary_image = cv2.adaptiveThreshold(otsu_thresh, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                            cv2.THRESH_BINARY, 5, 0.5)
+
+    # # Define the kernel for morphological operations
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, WIN_SIZE)
+
+    # # Decision logic for applying morphological operations
+    morpho_image = cv2.morphologyEx(binary_image, cv2.MORPH_OPEN, kernel)
+
+    # Bilateral filter to reduce noise while keeping edges sharp
+    filtered_image = cv2.bilateralFilter(morpho_image, 11, 17, 17)
+
+    return filtered_image
 
 def recognize_text(image, config='--psm 6 --oem 3 -c tessedit_char_whitelist=0123456789'):
     # Detect text regions using OpenCV
@@ -163,12 +204,11 @@ def extract_receipt_info(recognized_text):
     # Extract dates using a more flexible date pattern
     # date_pattern = r'(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})|(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{2,4})'
     # date_pattern = r'(\d{1,2}[-/]\d{1,2}(?:[-/]\d{2,4})?)|(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s+\d{2,4})?)'
-    date_pattern = r'(\d{1,2}[-/]\d{1,2}(?:[-/]\d{2,4})?)|(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s+\d{2,4})?)|((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}.?\s+\d{4})'
-
+    date_pattern = r'\b(\d{1,2}[-/]\d{1,2}(?:[-/]\d{2,4})?)\b|\b(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s+\d{2,4})?)\b|\b((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}.?\s+\d{4})\b'
 
     # Matches various date formats like DD/MM/YYYY, DD-MM-YYYY, MM/DD/YYYY, DD Mon YYYY (e.g., 10 Sep 23)
     date_matches = re.findall(date_pattern, recognized_text)
-    date_matches = [date for dates in date_matches for date in dates if date != '']
+    date_matches = [dateX for dates in date_matches for dateX in dates if dateX != '']
 
     # Extract merchant names using a flexible pattern
     merchant_name_pattern = r'Merchant|Retailer\s*:\s*(.*?)\n'
@@ -197,3 +237,93 @@ def handle_extracted_info(amounts, dates):
         transasction_instance = Transaction(**data)
         transactions.append(transasction_instance)
     return transactions
+
+def detect_boundary(image):
+    new_image = np.array(image)
+    # Convert the image to grayscale
+    gray_image = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
+
+    # Bilateral filter to reduce noise while keeping edges sharp
+    filtered_image = cv2.bilateralFilter(gray_image, 11, 17, 17)
+
+    # Use Canny Edge Detection to find the edges
+    edges = cv2.Canny(filtered_image, 30, 200)
+
+    # Dilate the edges to close gaps
+    dilated_edges = cv2.dilate(edges, np.ones((5,5), np.uint8), iterations=1)
+
+    # Find contours in the edged image
+    contours, _ = cv2.findContours(dilated_edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Sort contours by area and remove small ones
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
+    contour_image = new_image.copy()
+    cv2.drawContours(contour_image, contours, -1, (0,255,0), 3)
+
+    # Assume the largest contour is the receipt. Get its bounding box and crop the image to that region
+    if contours:
+        # # Find the rotated rectangle of the largest contour
+        rect = cv2.minAreaRect(contours[0])
+        box = cv2.boxPoints(rect)
+        box = np.intp(box)
+        # Calculate the area of the rectangle
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+        rectangle_area = width * height
+
+        # Calculate the area of the original image
+        image_area = new_image.shape[0] * new_image.shape[1]
+        print(rectangle_area/image_area)
+
+        # Check if the rectangle's area is at least 35% of the original image's area
+        if rectangle_area >= 0.35 * image_area:
+            # Order the box points: top-left, top-right, bottom-right, bottom-left
+            box = sorted(box, key=lambda x: x[0])  # Sort by x coordinate
+            # Now we have left-most and right-most, need to sort by y
+            left_most = box[:2]  # These are the left-most points
+            right_most = box[2:]  # These are the right-most points
+
+            # Sort the left-most coordinates according to their y-coordinates
+            # so we can grab the top-left and bottom-left points, respectively
+            left_most = sorted(left_most, key=lambda x: x[1])
+            (tl, bl) = left_most
+
+            # Now we need to sort the right-most points to grab the top-right and bottom-right
+            right_most = sorted(right_most, key=lambda x: x[1])
+            (tr, br) = right_most
+
+            # Now our points are in order and we can use them for perspective transformation
+            src_pts = np.array([tl, tr, br, bl], dtype="float32")
+
+            # Width of the new image will be the maximum distance between bottom-right and bottom-left
+            # x-coordinates or the top-right and top-left x-coordinates
+            widthA = np.linalg.norm(br - bl)
+            widthB = np.linalg.norm(tr - tl)
+            maxWidth = max(int(widthA), int(widthB))
+
+            # Height of the new image will be the maximum distance between the top-right and bottom-right
+            # y-coordinates or the top-left and bottom-left y-coordinates
+            heightA = np.linalg.norm(tr - br)
+            heightB = np.linalg.norm(tl - bl)
+            maxHeight = max(int(heightA), int(heightB))
+
+            # Now that we have the dimensions of the new image, construct
+            # the set of destination points to obtain a "birds eye view",
+            # (i.e. top-down view) of the image, again specifying points
+            # in the top-left, top-right, bottom-right, and bottom-left order
+            dst_pts = np.array([
+                [0, 0],
+                [maxWidth - 1, 0],
+                [maxWidth - 1, maxHeight - 1],
+                [0, maxHeight - 1]
+            ], dtype="float32")
+
+            # Compute the perspective transform matrix and then apply it
+            M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+            warped = cv2.warpPerspective(new_image, M, (maxWidth, maxHeight))
+        else:
+            print("Smaller than 60%")
+            warped = new_image
+    else:
+        warped = new_image
+    return Image.fromarray(warped)
