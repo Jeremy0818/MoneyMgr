@@ -109,7 +109,6 @@ scikit-image==0.18.2
 scikit-learn==1.0.1
 scipy==1.6.0
 Send2Trash==1.5.0
-setuptools==65.1.0
 shapely==2.0.2
 six==1.15.0
 smart-open==6.4.0
