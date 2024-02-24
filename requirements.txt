@@ -22,6 +22,7 @@ cycler==0.10.0
 cymem==2.0.8
 decorator==4.4.2
 defusedxml==0.6.0
+dj-database-url==2.1.0
 Django==4.2.8
 django-cors-headers==4.3.1
 djangorestframework==3.14.0
@@ -108,6 +109,7 @@ scikit-image==0.18.2
 scikit-learn==1.0.1
 scipy==1.6.0
 Send2Trash==1.5.0
+setuptools==65.1.0
 shapely==2.0.2
 six==1.15.0
 smart-open==6.4.0

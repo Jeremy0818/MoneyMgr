@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zvd@lr3270a*h+p3ffa++=h!e6$ght^evcny(0-q6xt#*xzc_@'
+SECRET_KEY = SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-zvd@lr3270a*h+p3ffa++=h!e6$ght^evcny(0-q6xt#*xzc_@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.100.11', '192.168.1.38']
+ALLOWED_HOSTS = ['192.168.100.11', '192.168.1.38', 'https://csyaiaddicted-e0810d2b2c55.herokuapp.com/']
 
 # Application definition
 
@@ -91,6 +91,10 @@ DATABASES = {
     }
 }
 
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
