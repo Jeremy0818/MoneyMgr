@@ -16,7 +16,6 @@ from datetime import timedelta
 import dj_database_url
 
 import django_on_heroku
-django_on_heroku.settings(locals())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -144,8 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',  # Add the origin of your frontend
     'http://localhost:8000',  # Add the origin of your frontend
-    'http://192.168.100.11:8000',
-    'http://192.168.1.38:8080',
+    'http://192.168.100.4:8000',
 ]
 
 CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
@@ -163,3 +161,5 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+django_on_heroku.settings(locals())
