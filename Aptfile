@@ -1,4 +1,4 @@
-deb http://deb.debian.org/debian stretch main
+http://deb.debian.org/debian stretch main
 
 libgl1-mesa-glx
 libenchant-dev
