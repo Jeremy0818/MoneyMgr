@@ -1,2 +1,2 @@
 libgl1-mesa-glx
-libenchant-dev
+deb http://deb.debian.org/debian stretch-backports main
