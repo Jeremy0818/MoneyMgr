@@ -1,3 +1,2 @@
 libgl1-mesa-glx
-deb http://deb.debian.org/debian stretch-backports main
-
+deb http://archive.ubuntu.com/ubuntu/ bionic main
