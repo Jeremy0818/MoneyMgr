@@ -6,7 +6,7 @@ import io
 import cv2
 import numpy as np
 import concurrent.futures
-import enchant
+# import enchant
 from datetime import datetime, date
 from dateutil import parser
 from .models import Transaction
@@ -136,20 +136,20 @@ def filter_short_words(text, min_length=3):
     filtered_words = [word for word in words if len(word) >= min_length]
     return '\n'.join(filtered_words)
 
-def filter_nonexistent_words(text, min_length=3):
-    # Initialize an English dictionary
-    english_dict = enchant.Dict("en_US")
+# def filter_nonexistent_words(text, min_length=3):
+#     # Initialize an English dictionary
+#     english_dict = enchant.Dict("en_US")
 
-    # Split the text into words
-    words = text.split()
+#     # Split the text into words
+#     words = text.split()
 
-    # Filter out words that are too short or do not exist in the dictionary
-    filtered_words = [word for word in words if (len(word) >= min_length and english_dict.check(word)) or (word.replace('.', '').isdigit() or word.replace('-', '').isdigit())]
+#     # Filter out words that are too short or do not exist in the dictionary
+#     filtered_words = [word for word in words if (len(word) >= min_length and english_dict.check(word)) or (word.replace('.', '').isdigit() or word.replace('-', '').isdigit())]
 
-    # Rejoin the filtered words into a string
-    filtered_text = ' '.join(filtered_words)
+#     # Rejoin the filtered words into a string
+#     filtered_text = ' '.join(filtered_words)
 
-    return filtered_text
+#     return filtered_text
 
 def perform_ocr(image, coordinates, config):
     x, y, w, h = coordinates
