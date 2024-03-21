@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Sum
 from django.http import HttpResponse, JsonResponse
 from django.middleware import csrf
 from django.shortcuts import render
@@ -205,6 +206,10 @@ def transaction_api(request):
                     account.save()
                     expense = Expense(user=user, transaction=transaction_obj, category=category, withdrawed_account=account)
                     expense.save()
+                    budget = Budget.objects.filter(expense_category=category, user=user).first()
+                    if budget is not None:
+                        budget.balance += Decimal(item['total_amount'])
+                        budget.save()
                 elif item['type'] == "Income":
                     category = IncomeCategory.objects.get(user=user, category_name=item['category'])
                     account = Account.objects.get(user=user, account_name=item['account'])
@@ -228,11 +233,33 @@ def transaction_id_api(request, id):
         try:
             user = request.user
             data = json.loads(request.body)
+            print(data, '++++++++++++++++')
             transaction_obj = Transaction.objects.get(id=id)
 
             with transaction.atomic():
                 if data['type'] == "Expense":
                     expense = Expense.objects.get(user=user, transaction=transaction_obj)
+                    # Update budget balance
+                    if expense.category.category_name == data['category']:
+                        if transaction_obj.total_amount != Decimal(data['total_amount']):
+                            budget = Budget.objects.filter(expense_category=expense.category, user=user).first()
+                            if budget is not None:
+                                print("here-------------")
+                                budget.balance += Decimal(data['total_amount']) - transaction_obj.total_amount
+                                budget.save()
+                    else:
+                        budget = Budget.objects.filter(expense_category=expense.category, user=user).first()
+                        if budget is not None:
+                            print("here1-------------")
+                            budget.balance -= Decimal(transaction_obj.total_amount)
+                            budget.save()
+                        category = ExpenseCategory.objects.get(user=user, category_name=data['category'])
+                        budget = Budget.objects.filter(expense_category=category, user=user).first()
+                        if budget is not None:
+                            print("here2-------------")
+                            budget.balance += Decimal(data['total_amount'])
+                            budget.save()
+                    # Update account balance
                     if data['account'] != expense.withdrawed_account.account_name:
                         # Undo previous calculation
                         account = expense.withdrawed_account
@@ -242,15 +269,16 @@ def transaction_id_api(request, id):
                         account = Account.objects.get(user=user, account_name=data['account'])
                         account.balance -= Decimal(data['total_amount'])
                         account.save()
+                        # Update expense withdrawed account
+                        expense.withdrawed_account = Account.objects.get(user=user, account_name=data['account'])
                     else:
-                        # Undo previous calculation
-                        expense.withdrawed_account.balance += transaction_obj.total_amount
-                        # Update account balance
-                        expense.withdrawed_account.balance -= Decimal(data['total_amount'])
-                    # Update Income fields
+                        # recalculate expense balance
+                        expense.withdrawed_account.balance += transaction_obj.total_amount - Decimal(data['total_amount'])
+                        expense.withdrawed_account.save()
+                    transaction_obj.total_amount = Decimal(data['total_amount'])
+                    transaction_obj.save()
                     category = ExpenseCategory.objects.get(user=user, category_name=data['category'])
                     expense.category = category
-                    expense.withdrawed_account = Account.objects.get(user=user, account_name=data['account'])
                     expense.save()
                 elif data['type'] == "Income":
                     income = Income.objects.get(user=user, transaction=transaction_obj)
@@ -297,6 +325,12 @@ def transaction_id_api(request, id):
             with transaction.atomic():
                 if data['type'] == "Expense":
                     expense = Expense.objects.get(user=user, transaction=transaction_obj)
+                    # Update budget balance
+                    budget = Budget.objects.filter(expense_category=expense.category, user=user).first()
+                    if budget is not None:
+                        budget.balance -= transaction_obj.total_amount
+                        budget.save()
+                    # Update account balance
                     expense.withdrawed_account.balance += transaction_obj.total_amount
                     expense.withdrawed_account.save()
                     expense.delete()
@@ -315,7 +349,7 @@ def transaction_id_api(request, id):
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def account_api(request):
     if request.method == "GET":
@@ -329,7 +363,7 @@ def account_api(request):
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
-    elif request.method == "POST":
+    elif request.method == "PUT":
         try:
             user = request.user
             data = json.loads(request.body)
@@ -340,7 +374,7 @@ def account_api(request):
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def account_id_api(request, id):
     if request.method == "GET":
@@ -375,7 +409,7 @@ def account_id_api(request, id):
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
-    elif request.method == "PUT":
+    elif request.method == "POST":
         try:
             user = request.user
             data = json.loads(request.body)
@@ -393,6 +427,73 @@ def account_id_api(request, id):
             account = user.accounts.get(pk=id)
             print(account)
             account.delete()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def budget_api(request):
+    if request.method == "GET":
+        try:
+            user = request.user
+            budgets = user.budgets.all()
+            serializer = BudgetSerializer(budgets, many=True)
+            serialized_data = serializer.data
+            print(serialized_data)
+            return JsonResponse({"data": serialized_data})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "PUT":
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            category = ExpenseCategory.objects.get(user=user, category_name=data['category_name'])
+            # calculate all expenses amount in the category to initialize the balance
+            filtered_expenses = user.expenses.filter(category=category)
+            total_amount = filtered_expenses.aggregate(total_amount=Sum('transaction__total_amount'))['total_amount'] or 0.0
+            budget_obj = Budget(user=user, expense_category=category, budget=data['budget'], balance=total_amount)
+            budget_obj.save()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def budget_id_api(request, id):
+    if request.method == "GET":
+        try:
+            user = request.user
+            budget = user.budgets.get(pk=id)
+            serializer = BudgetSerializer(budget)
+            serialized_data = serializer.data
+            print(serialized_data)
+            return JsonResponse({"data": serialized_data})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "POST":
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            budget_obj = user.budgets.get(pk=id)
+            budget_obj.budget = data['budget']
+            budget_obj.save()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)}, status=500)
+    elif request.method == "DELETE":
+        try:
+            user = request.user
+            data = json.loads(request.body)
+            category = ExpenseCategory.objects.get(user=user, category_name=data['category'])
+            budget_obj = user.budgets.get(expense_category=category)
+            print(budget_obj)
+            budget_obj.delete()
             return JsonResponse({"status": "success"})
         except Exception as e:
             print(e)

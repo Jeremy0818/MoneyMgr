@@ -52,3 +52,10 @@ class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
         fields = '__all__'
+
+class BudgetSerializer(serializers.ModelSerializer):
+    expense_category = ExpenseCategorySerializer()
+
+    class Meta:
+        model = Budget
+        fields = ('id', 'expense_category', 'budget', 'balance')

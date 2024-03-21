@@ -135,7 +135,8 @@ Financial Record
 '''
 # Future work: track history of budget change
 class Budget(models.Model):
-    expense_category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='budgets')
+    expense_category = models.OneToOneField(ExpenseCategory, on_delete=models.CASCADE, unique=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -143,6 +144,7 @@ class Budget(models.Model):
         return f'Budget for {self.expense_category} is {self.budget} and currently at {self.balance}'
 
 class Goal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals')
     title =  models.CharField(max_length=255, blank=True, null=True)
     target = models.DecimalField(max_digits=10, decimal_places=2)
     balance = models.DecimalField(max_digits=10, decimal_places=2)

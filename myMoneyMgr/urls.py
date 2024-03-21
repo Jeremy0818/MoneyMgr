@@ -37,6 +37,8 @@ urlpatterns = [
     path('api/transaction/<int:id>/', transaction_id_api, name='api-transaction-id'),
     path('api/account/', account_api, name='api-account'),
     path('api/account/<int:id>/', account_id_api, name='api-account-id'),
+    path('api/budget/', budget_api, name='api-budget'),
+    path('api/budget/<int:id>/', budget_id_api, name='api-budget-id'),
     
     # Views urls
     path('', Index.as_view(), name='index'),
